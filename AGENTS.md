@@ -25,7 +25,7 @@ bun run dev       # Astro dev server
 bun run build     # production build → dist/
 bun run preview   # serve the production build locally
 bun run check     # astro check + tsc --noEmit
-bun test          # run the Vitest suite
+bun run test      # run the Vitest suite; do not use bun test
 bun run format    # format all files with Prettier
 ```
 

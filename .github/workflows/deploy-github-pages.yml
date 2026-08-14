@@ -27,7 +27,7 @@ jobs:
         run: bun run check
 
       - name: Run tests
-        run: bun test
+        run: bun run test
 
       - name: Build the app
         run: bun run build
