@@ -1,0 +1,13 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro';
+import App from '@/tools/grid-maker/App';
+---
+
+<ToolLayout
+  title="Grid Maker"
+  glyph="▦"
+  description="Create custom printable grids for various paper sizes."
+  activeSlug="grid-maker"
+>
+  <App client:only="react" />
+</ToolLayout>

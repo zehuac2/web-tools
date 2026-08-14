@@ -1,0 +1,13 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro';
+import App from '@/tools/random/App';
+---
+
+<ToolLayout
+  title="Random"
+  glyph="#"
+  description="Generate random strings from configurable letter and number sections."
+  activeSlug="random"
+>
+  <App client:only="react" />
+</ToolLayout>

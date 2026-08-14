@@ -1,0 +1,13 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro';
+import App from '@/tools/receipt-splitter/App';
+---
+
+<ToolLayout
+  title="Receipt Splitter"
+  glyph="%"
+  description="Split a shared receipt equally, by fees, or proportionally."
+  activeSlug="receipt-splitter"
+>
+  <App client:only="react" />
+</ToolLayout>

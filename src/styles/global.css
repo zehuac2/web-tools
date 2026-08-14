@@ -1,0 +1,19 @@
+@layer reset, base, tokens, recipes, utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  color: var(--colors-fg-default);
+  background: var(--colors-bg-canvas);
+  font-family: var(--fonts-body);
+}
+
+@media print {
+  body {
+    background: white;
+  }
+}

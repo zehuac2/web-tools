@@ -1,0 +1,13 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro';
+import App from '@/tools/driving-visualizer/App';
+---
+
+<ToolLayout
+  title="Driving Visualizer"
+  glyph="◈"
+  description="Visualize a car's swept path through a maneuver, top-down, using a kinematic bicycle model."
+  activeSlug="driving-visualizer"
+>
+  <App client:only="react" />
+</ToolLayout>

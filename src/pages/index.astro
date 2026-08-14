@@ -1,0 +1,69 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro';
+import { css, cx } from 'styled-system/css';
+import { card } from 'styled-system/recipes';
+import { TOOLS } from '@/meta';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<ToolLayout title="Web Tools" glyph="◆" description="A small collection of single-purpose web tools.">
+  <div
+    class={css({
+      display: 'grid',
+      gap: '5',
+      gridTemplateColumns: {
+        base: '1fr',
+        sm: 'repeat(2, 1fr)',
+      },
+    })}
+  >
+    {
+      TOOLS.map((tool) => (
+        <a
+          href={`${base}/${tool.slug}`}
+          class={css({
+            display: 'block',
+            textDecoration: 'none',
+            color: 'fg.default',
+          })}
+        >
+          <div
+            class={cx(
+              card(),
+              css({
+                height: '[100%]',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '3',
+                transition: '[transform 120ms ease, box-shadow 120ms ease]',
+                _hover: {
+                  boxShadow: 'card',
+                  transform: '[translateY(-2px)]',
+                },
+              }),
+            )}
+          >
+            <div
+              class={css({
+                width: '[36px]',
+                height: '[36px]',
+                display: 'grid',
+                placeItems: 'center',
+                borderRadius: 'card',
+                bg: 'brand.solid',
+                color: 'fg.onBrand',
+                fontWeight: 'bold',
+              })}
+              aria-hidden="true"
+            >
+              {tool.glyph}
+            </div>
+            <div class={css({ fontSize: 'ui16', fontWeight: 'ui' })}>{tool.title}</div>
+            <div class={css({ fontSize: 'ui13', color: 'fg.muted' })}>{tool.blurb}</div>
+          </div>
+        </a>
+      ))
+    }
+  </div>
+</ToolLayout>
