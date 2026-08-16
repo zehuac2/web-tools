@@ -13,15 +13,15 @@ import {
   getCorners,
   createInitialState,
   turningRadius,
-} from '@/tools/driving-visualizer/sim/CarModel.ts';
+} from '@/tools/driving-visualizer/sim/CarModel';
 import type {
   CarParams,
   CarState,
-} from '@/tools/driving-visualizer/sim/CarModel.ts';
-import { useKeyboardInput } from '@/tools/driving-visualizer/sim/useKeyboardInput.ts';
-import { Car } from './Car.tsx';
-import { SweptPath, type SweptPathHandle } from './SweptPath.tsx';
-import { getSceneColors } from './theme.ts';
+} from '@/tools/driving-visualizer/sim/CarModel';
+import { useKeyboardInput } from '@/tools/driving-visualizer/sim/useKeyboardInput';
+import { Car } from './Car';
+import { SweptPath, type SweptPathHandle } from './SweptPath';
+import { getSceneColors } from './theme';
 
 export interface TelemetryData {
   x: number;

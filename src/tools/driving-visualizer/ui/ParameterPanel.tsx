@@ -3,12 +3,19 @@ import { css, cx } from 'styled-system/css';
 import { button } from 'styled-system/recipes';
 import ToolPanel from '@/components/ToolPanel';
 import SliderRow from '@/components/SliderRow';
-import type { CarParams } from '@/tools/driving-visualizer/sim/CarModel.ts';
-
-export interface ParameterPanelProps {
-  params: CarParams;
-  onChange: (params: CarParams) => void;
-}
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '@/tools/driving-visualizer/store/index';
+import {
+  setWheelbase,
+  setFrontOverhang,
+  setRearOverhang,
+  setBodyWidth,
+  setMaxSteeringAngle,
+  setSteeringRate,
+  setSpeed,
+} from '@/tools/driving-visualizer/store/carParamsSlice';
 
 const listClassName = css({
   display: 'flex',
@@ -19,12 +26,10 @@ const listClassName = css({
 const toggleClassName = css({ mb: '2' });
 
 /** Sliders for every `CarParams` field. Collapsible to save vertical space. */
-const ParameterPanel: FC<ParameterPanelProps> = ({ params, onChange }) => {
+const ParameterPanel: FC = () => {
   const [open, setOpen] = useState(true);
-
-  function set<K extends keyof CarParams>(key: K, value: CarParams[K]): void {
-    onChange({ ...params, [key]: value });
-  }
+  const dispatch = useAppDispatch();
+  const params = useAppSelector((state) => state.carParams);
 
   const steerDeg = (params.maxSteeringAngle * 180) / Math.PI;
   const steerRateDeg = (params.steeringRate * 180) / Math.PI;
@@ -47,7 +52,7 @@ const ParameterPanel: FC<ParameterPanelProps> = ({ params, onChange }) => {
             max={6.0}
             step={0.05}
             unit="m"
-            onChange={(v) => set('wheelbase', v)}
+            onChange={(v) => dispatch(setWheelbase(v))}
           />
           <SliderRow
             label="Front Overhang"
@@ -56,7 +61,7 @@ const ParameterPanel: FC<ParameterPanelProps> = ({ params, onChange }) => {
             max={2.0}
             step={0.05}
             unit="m"
-            onChange={(v) => set('frontOverhang', v)}
+            onChange={(v) => dispatch(setFrontOverhang(v))}
           />
           <SliderRow
             label="Rear Overhang"
@@ -65,7 +70,7 @@ const ParameterPanel: FC<ParameterPanelProps> = ({ params, onChange }) => {
             max={2.0}
             step={0.05}
             unit="m"
-            onChange={(v) => set('rearOverhang', v)}
+            onChange={(v) => dispatch(setRearOverhang(v))}
           />
           <SliderRow
             label="Body Width"
@@ -74,7 +79,7 @@ const ParameterPanel: FC<ParameterPanelProps> = ({ params, onChange }) => {
             max={3.0}
             step={0.05}
             unit="m"
-            onChange={(v) => set('bodyWidth', v)}
+            onChange={(v) => dispatch(setBodyWidth(v))}
           />
           <SliderRow
             label="Max Steering Angle"
@@ -84,7 +89,7 @@ const ParameterPanel: FC<ParameterPanelProps> = ({ params, onChange }) => {
             step={1}
             unit="°"
             decimals={0}
-            onChange={(v) => set('maxSteeringAngle', (v * Math.PI) / 180)}
+            onChange={(v) => dispatch(setMaxSteeringAngle((v * Math.PI) / 180))}
           />
           <SliderRow
             label="Steering Rate"
@@ -94,7 +99,7 @@ const ParameterPanel: FC<ParameterPanelProps> = ({ params, onChange }) => {
             step={5}
             unit="°/s"
             decimals={0}
-            onChange={(v) => set('steeringRate', (v * Math.PI) / 180)}
+            onChange={(v) => dispatch(setSteeringRate((v * Math.PI) / 180))}
           />
           <SliderRow
             label="Speed"
@@ -103,7 +108,7 @@ const ParameterPanel: FC<ParameterPanelProps> = ({ params, onChange }) => {
             max={20}
             step={0.5}
             unit="m/s"
-            onChange={(v) => set('speed', v)}
+            onChange={(v) => dispatch(setSpeed(v))}
           />
         </div>
       )}

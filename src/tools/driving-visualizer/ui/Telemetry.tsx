@@ -1,7 +1,7 @@
 import { type FC } from 'react';
 import { css } from 'styled-system/css';
 import ToolPanel from '@/components/ToolPanel';
-import type { TelemetryData } from '@/tools/driving-visualizer/scene/Scene.tsx';
+import type { TelemetryData } from '@/tools/driving-visualizer/store/telemetrySlice';
 
 export interface TelemetryProps {
   data: TelemetryData;
