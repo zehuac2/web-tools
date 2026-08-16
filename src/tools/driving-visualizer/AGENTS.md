@@ -15,6 +15,7 @@ sim/                    Pure simulation. No React, no three.js.
 scene/                  The R3F scene graph. Owns every three.js object.
 store/                  Redux Toolkit store, slices, and scene commands.
 ui/                     Sidebar panels. Plain data and store hooks only.
+testStore.tsx           Test-only `renderWithStore` helper.
 ```
 
 - `sim/CarModel.ts` — bicycle model math: `step`, `getCorners`, `turningRadius`,
@@ -82,14 +83,18 @@ not use an imperative handle.
    `useEffectEvent`, so it always reads the latest `invalidate` and `camera`
    without re-subscribing.
 
-Add a new command the same way: one `createAction`, one dispatch site, and one
-`addAppListener` in `Scene`.
+Add a new command the same way: one `createAction`, one dispatch site, one
+`addAppListener` in `Scene`, and one row in the `sceneCommands` table in
+`store/index.test.ts`.
 
 ## Layer rules
 
 - Keep `sim/` framework-free. `CarModel.ts` and `input.ts` are pure and have
   Vitest coverage (`*.test.ts`). Only `useKeyboardInput.ts` may touch React and
   the DOM. Run tests with `bun run test`.
+- `store/` and `ui/` also have Vitest coverage. `scene/` has none: it needs an
+  R3F canvas, and `@react-three/test-renderer` is not a dependency. Keep new
+  logic out of `scene/` when a pure module or a slice can hold it.
 - `ui/` components must not import from `scene/`. They use the typed store hooks
   and the shared components in `@/components`.
 - `ui/` components follow the repo component pattern (`FC`, exported props
@@ -106,6 +111,19 @@ Add a new command the same way: one `createAction`, one dispatch site, and one
 - The store enables Redux DevTools under the name `driving-visualizer`.
   `actionCreators` includes the scene commands, so you can dispatch them from
   DevTools.
+- `makeStore()` builds a store with its own listener middleware. `store` is the
+  single instance the app uses. Tests call `makeStore()` so that state and
+  listener subscriptions never leak between them.
+- To test a component against the store, use `renderWithStore` from
+  `testStore.tsx`. It wraps the element in a `<Provider>` and returns the store
+  next to the Testing Library queries. Pass a store to seed state or to register
+  listeners first; omit it to get a new store.
+
+```tsx
+const { store } = renderWithStore(<Toolbar />);
+await userEvent.click(screen.getByRole('button', { name: '◈ Hide Fill' }));
+expect(store.getState().ui.fillVisible).toBe(false);
+```
 
 ## Keyboard input
 
