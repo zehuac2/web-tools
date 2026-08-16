@@ -17,10 +17,8 @@ const lineClassName = css({
 const keyClassName = css({
   display: 'inline-block',
   bg: 'bg.canvas',
-  borderWidth: '[1px]',
-  borderStyle: 'solid',
-  borderColor: 'border.default',
-  borderRadius: '[3px]',
+  border: 'subtle',
+  borderRadius: 'xs',
   px: '1',
   color: 'fg.default',
   fontFamily: 'mono',

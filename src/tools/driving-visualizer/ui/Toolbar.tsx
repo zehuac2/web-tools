@@ -24,9 +24,12 @@ const containerClassName = css({
 });
 
 // While wrapping, stop the panel short of the Telemetry readout in the opposite
-// corner: 200px of panel, its 12px inset, and a 24px gap.
+// corner: the telemetry floor width, its spacing.3 inset, and a spacing.6 gap.
 const panelClassName = css({
-  maxWidth: { base: '[calc(100vw - 236px)]', lg: '[none]' },
+  maxWidth: {
+    base: '[calc(100vw - token(sizes.telemetry) - token(spacing.3) - token(spacing.6))]',
+    lg: '[none]',
+  },
 });
 
 /** Action buttons for the driving visualizer: reset, clear, center, toggles. */

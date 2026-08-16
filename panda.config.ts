@@ -76,11 +76,12 @@ export default defineConfig({
             1: { value: '#e11d48' },
           },
         },
-        radii: {
-          sm: { value: '8px' },
-          md: { value: '10px' },
-        },
         spacing: {},
+        sizes: {
+          page: { value: '75rem' }, // 1200px, centered header/main column
+          sidebar: { value: '23.125rem' }, // 370px, settings column in tool layouts
+          telemetry: { value: '12.5rem' }, // 200px, telemetry readout floor width
+        },
         fontWeights: {
           demibold: { value: '650' },
         },
@@ -232,9 +233,20 @@ export default defineConfig({
           },
         },
         radii: {
-          card: { value: '{radii.md}', description: 'Card radius' },
-          control: { value: '{radii.sm}', description: 'Form control radius' },
-          inner: { value: '{radii.sm}', description: 'Inner container radius' },
+          card: { value: '{radii.xl}', description: 'Card radius' },
+          control: { value: '{radii.lg}', description: 'Form control radius' },
+          inner: { value: '{radii.lg}', description: 'Inner container radius' },
+        },
+        borders: {
+          subtle: {
+            value: '1px solid {colors.border.default}',
+            description: 'Default hairline border',
+          },
+          strong: {
+            value: '1px solid {colors.border.strong}',
+            description:
+              'Stronger hairline border (canvas preview, HUD panels)',
+          },
         },
         shadows: {
           card: {

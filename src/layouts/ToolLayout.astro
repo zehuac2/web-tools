@@ -54,7 +54,7 @@ const mainClass = fullBleed
       p: '0',
     })
   : css({
-      maxWidth: '[1200px]',
+      maxWidth: 'page',
       margin: '[0 auto]',
       px: { base: '6', xsDown: '4', _print: '0' },
       py: { base: '8', xsDown: '5', _print: '0' },
@@ -76,17 +76,16 @@ const mainClass = fullBleed
           position: 'sticky',
           top: '0',
           zIndex: '[10]',
-          borderBottomWidth: '[1px]',
-          borderBottomStyle: 'solid',
-          borderBottomColor: 'border.default',
+          borderBottom: 'subtle',
           bg: 'surface.glass',
-          backdropFilter: '[blur(10px)]',
+          backdropFilter: 'auto',
+          backdropBlur: 'md',
           display: { _print: 'none' },
         })}
       >
         <div
           class={css({
-            maxWidth: '[1200px]',
+            maxWidth: 'page',
             margin: '[0 auto]',
             px: { base: '6', xsDown: '4' },
             py: { base: '4', xsDown: '3' },
@@ -110,8 +109,8 @@ const mainClass = fullBleed
           >
             <div
               class={css({
-                width: '[36px]',
-                height: '[36px]',
+                width: '9',
+                height: '9',
                 display: 'grid',
                 placeItems: 'center',
                 borderRadius: 'card',

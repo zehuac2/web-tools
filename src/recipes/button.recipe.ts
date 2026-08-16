@@ -40,9 +40,7 @@ export const buttonRecipe = defineRecipe({
       subtle: {
         bg: 'bg.canvas',
         color: 'fg.default',
-        borderWidth: '[1px]',
-        borderStyle: 'solid',
-        borderColor: 'border.default',
+        border: 'subtle',
         _hover: {
           borderColor: 'border.strong',
         },

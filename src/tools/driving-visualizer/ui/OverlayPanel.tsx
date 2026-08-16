@@ -14,7 +14,7 @@ export interface OverlayPanelProps {
 const titleClassName = css({
   fontSize: 'xs',
   fontWeight: 'ui',
-  letterSpacing: '[2px]',
+  letterSpacing: 'widest',
   textTransform: 'uppercase',
   color: 'fg.muted',
   mb: '2',

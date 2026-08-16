@@ -74,7 +74,7 @@ const Configuration: FC<ConfigurationProps> = ({ className, onSubmit }) => {
         className={css({
           mt: '4',
           display: 'grid',
-          gridTemplateColumns: { base: '1fr', sm: '140px 1fr' },
+          gridTemplateColumns: { base: '1fr', sm: 'token(sizes.36) 1fr' },
           alignItems: 'center',
           gap: { base: '2.5', sm: '3' },
         })}

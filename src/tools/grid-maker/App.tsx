@@ -42,7 +42,7 @@ const App: FC = () => {
           gap: '6',
           gridTemplateColumns: {
             base: 'auto',
-            lg: '[1fr 370px]',
+            lg: '[1fr token(sizes.sidebar)]',
           },
           alignItems: {
             lg: 'stretch',
@@ -54,9 +54,7 @@ const App: FC = () => {
             className={css({
               px: '5',
               py: '4',
-              borderBottomWidth: '[1px]',
-              borderBottomStyle: 'solid',
-              borderBottomColor: 'border.default',
+              borderBottom: 'subtle',
               display: { _print: 'none' },
             })}
           >
@@ -83,9 +81,7 @@ const App: FC = () => {
               className={css({
                 overflow: { base: 'auto', _print: 'visible' },
                 bg: 'white',
-                borderWidth: { base: '[1px]', _print: '0' },
-                borderStyle: { base: 'solid', _print: 'none' },
-                borderColor: 'border.default',
+                border: { base: 'subtle', _print: 'none' },
                 borderRadius: { base: 'inner', _print: '[0]' },
                 p: { base: '4', _print: '0' },
               })}
@@ -95,9 +91,7 @@ const App: FC = () => {
                   display: 'block',
                   margin: '[0 auto]',
                   bg: 'white',
-                  borderWidth: { base: '[1px]', _print: '0' },
-                  borderStyle: { base: 'solid', _print: 'none' },
-                  borderColor: 'border.strong',
+                  border: { base: 'strong', _print: 'none' },
                   boxShadow: { base: 'subtle', _print: '[none]' },
                 })}
                 width={deferredWidth}

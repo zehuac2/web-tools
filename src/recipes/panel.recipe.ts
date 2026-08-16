@@ -7,9 +7,7 @@ export const panelRecipe = defineRecipe({
   base: {
     p: '3.5',
     borderRadius: 'card',
-    borderWidth: '[1px]',
-    borderStyle: 'solid',
-    borderColor: 'border.default',
+    border: 'subtle',
     bg: 'bg.canvas',
     color: 'fg.muted',
     fontSize: 'sm',
