@@ -1,7 +1,7 @@
 import { type FC } from 'react';
 import { css } from 'styled-system/css';
 import { button } from 'styled-system/recipes';
-import ToolPanel from '@/components/ToolPanel';
+import OverlayPanel from './OverlayPanel';
 import {
   useAppDispatch,
   useAppSelector,
@@ -14,10 +14,19 @@ import {
   resetPose,
 } from '@/tools/driving-visualizer/store/sceneActions';
 
+// Below `lg` the buttons wrap into rows. A column would be ~340px tall and
+// swallow the canvas on a short viewport.
 const containerClassName = css({
   display: 'flex',
-  flexDirection: 'column',
+  flexDirection: { base: 'row', lg: 'column' },
+  flexWrap: 'wrap',
   gap: '2',
+});
+
+// While wrapping, stop the panel short of the Telemetry readout in the opposite
+// corner: 200px of panel, its 12px inset, and a 24px gap.
+const panelClassName = css({
+  maxWidth: { base: '[calc(100vw - 236px)]', lg: '[none]' },
 });
 
 /** Action buttons for the driving visualizer: reset, clear, center, toggles. */
@@ -26,7 +35,11 @@ const Toolbar: FC = () => {
   const fillVisible = useAppSelector((state) => state.ui.fillVisible);
 
   return (
-    <ToolPanel title="Actions">
+    <OverlayPanel
+      className={panelClassName}
+      placement="topLeft"
+      title="Actions"
+    >
       <div className={containerClassName}>
         <button
           className={button({ variant: 'subtle' })}
@@ -64,7 +77,7 @@ const Toolbar: FC = () => {
           ⊙ Follow Car
         </button>
       </div>
-    </ToolPanel>
+    </OverlayPanel>
   );
 };
 

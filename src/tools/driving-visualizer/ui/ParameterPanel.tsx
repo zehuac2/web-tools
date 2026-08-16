@@ -1,8 +1,8 @@
 import { type FC, useState } from 'react';
 import { css, cx } from 'styled-system/css';
 import { button } from 'styled-system/recipes';
-import ToolPanel from '@/components/ToolPanel';
 import SliderRow from '@/components/SliderRow';
+import OverlayPanel from './OverlayPanel';
 import {
   useAppDispatch,
   useAppSelector,
@@ -25,9 +25,22 @@ const listClassName = css({
 
 const toggleClassName = css({ mb: '2' });
 
+// Panda's `lg` breakpoint, in pixels.
+const LG_BREAKPOINT = 1024;
+
+/**
+ * Report whether the viewport is at least as wide as Panda's `lg` breakpoint.
+ * The tool only mounts on the client, so `window` is always available here.
+ */
+function isWideViewport(): boolean {
+  return window.innerWidth >= LG_BREAKPOINT;
+}
+
 /** Sliders for every `CarParams` field. Collapsible to save vertical space. */
 const ParameterPanel: FC = () => {
-  const [open, setOpen] = useState(true);
+  // Seven sliders cover most of a short viewport. Start collapsed there and
+  // let the reader open them, but stay open where there is room.
+  const [open, setOpen] = useState(isWideViewport);
   const dispatch = useAppDispatch();
   const params = useAppSelector((state) => state.carParams);
 
@@ -35,7 +48,7 @@ const ParameterPanel: FC = () => {
   const steerRateDeg = (params.steeringRate * 180) / Math.PI;
 
   return (
-    <ToolPanel title="Car Parameters">
+    <OverlayPanel placement="bottomCenter" title="Car Parameters">
       <button
         className={cx(button({ variant: 'ghost' }), toggleClassName)}
         onClick={() => setOpen((o) => !o)}
@@ -112,7 +125,7 @@ const ParameterPanel: FC = () => {
           />
         </div>
       )}
-    </ToolPanel>
+    </OverlayPanel>
   );
 };
 

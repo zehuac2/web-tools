@@ -1,8 +1,12 @@
-// Compact controls reference, shown as a card in the settings column.
+// Compact controls reference, shown as an overlay in the canvas corner.
 
 import { type FC, type ReactNode } from 'react';
 import { css } from 'styled-system/css';
-import ToolPanel from '@/components/ToolPanel';
+import OverlayPanel from './OverlayPanel';
+
+// Below `lg` this legend would collide with the bottom-center parameter bar.
+// It documents keyboard input, so a narrow or touch viewport does not need it.
+const panelClassName = css({ display: { base: 'none', lg: 'block' } });
 
 const lineClassName = css({
   fontSize: 'ui13',
@@ -31,7 +35,11 @@ function K({ children }: { children: ReactNode }): React.ReactElement {
 /** Static reference for the driving visualizer's keyboard and mouse controls. */
 const Controls: FC = () => {
   return (
-    <ToolPanel title="Controls">
+    <OverlayPanel
+      className={panelClassName}
+      placement="bottomRight"
+      title="Controls"
+    >
       <div className={lineClassName}>
         <K>W</K>
         <K>↑</K> Forward &nbsp; <K>S</K>
@@ -47,7 +55,7 @@ const Controls: FC = () => {
         <br />
         <K>Scroll</K> Zoom &nbsp; <K>Drag</K> Pan
       </div>
-    </ToolPanel>
+    </OverlayPanel>
   );
 };
 

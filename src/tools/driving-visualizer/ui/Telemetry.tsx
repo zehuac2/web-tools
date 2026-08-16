@@ -1,7 +1,10 @@
 import { type FC } from 'react';
 import { css } from 'styled-system/css';
-import ToolPanel from '@/components/ToolPanel';
 import { useAppSelector } from '@/tools/driving-visualizer/store/index';
+import OverlayPanel from './OverlayPanel';
+
+// Hold a floor width so the rows do not reflow as the values change.
+const panelClassName = css({ minWidth: '[200px]' });
 
 const rowClassName = css({
   display: 'flex',
@@ -42,7 +45,11 @@ const Telemetry: FC = () => {
   const hdg = ((headingDeg % 360) + 360) % 360;
 
   return (
-    <ToolPanel title="Telemetry">
+    <OverlayPanel
+      className={panelClassName}
+      placement="topRight"
+      title="Telemetry"
+    >
       <div className={rowClassName}>
         <span className={labelClassName}>Status</span>
         <span className={valueClassName}>
@@ -76,7 +83,7 @@ const Telemetry: FC = () => {
         <span className={labelClassName}>Speed</span>
         <span className={valueClassName}>{fmt(speed, 1)} m/s</span>
       </div>
-    </ToolPanel>
+    </OverlayPanel>
   );
 };
 

@@ -8,13 +8,57 @@ export interface Props {
   description: string;
   glyph: string;
   activeSlug?: string;
+  /**
+   * Let the tool fill the viewport below the header instead of sitting in the
+   * centered, max-width `<main>`. The page then never scrolls.
+   */
+  fullBleed?: boolean;
 }
 
-const { title, description, glyph, activeSlug } = Astro.props;
+const { title, description, glyph, activeSlug, fullBleed } = Astro.props;
 
 // Astro appends a trailing slash to BASE_URL; strip it so path joins stay
 // unambiguous regardless of that behavior.
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+// Pick one complete class per element instead of merging two `css()` calls.
+// Panda emits atomic classes, so a merge would leave both `maxWidth` rules
+// active and let emit order decide the winner.
+const shellClass = fullBleed
+  ? css({
+      height: { base: '[100dvh]', _print: 'auto' },
+      overflow: { base: 'hidden', _print: 'visible' },
+      display: 'flex',
+      flexDirection: 'column',
+      backgroundImage: {
+        base: 'linear-gradient(135deg, var(--colors-bg-canvas), var(--colors-bg-subtle))',
+        _print: 'none',
+      },
+    })
+  : css({
+      minHeight: { base: '[100vh]', _print: 'auto' },
+      backgroundImage: {
+        base: 'linear-gradient(135deg, var(--colors-bg-canvas), var(--colors-bg-subtle))',
+        _print: 'none',
+      },
+    });
+
+// `client:only` islands mount inside an `<astro-island>` custom element, which
+// has no default display or height. A percentage-height chain collapses there,
+// so a full-bleed tool positions itself against this `<main>` instead.
+const mainClass = fullBleed
+  ? css({
+      position: 'relative',
+      flex: '[1]',
+      minHeight: '[0]',
+      p: '0',
+    })
+  : css({
+      maxWidth: '[1200px]',
+      margin: '[0 auto]',
+      px: { base: '6', xsDown: '4', _print: '0' },
+      py: { base: '8', xsDown: '5', _print: '0' },
+    });
 ---
 
 <html lang="en">
@@ -26,15 +70,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
   </head>
   <body>
-    <div
-      class={css({
-        minHeight: { base: '[100vh]', _print: 'auto' },
-        backgroundImage: {
-          base: 'linear-gradient(135deg, var(--colors-bg-canvas), var(--colors-bg-subtle))',
-          _print: 'none',
-        },
-      })}
-    >
+    <div class={shellClass}>
       <header
         class={css({
           position: 'sticky',
@@ -147,14 +183,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         </div>
       </header>
 
-      <main
-        class={css({
-          maxWidth: '[1200px]',
-          margin: '[0 auto]',
-          px: { base: '6', xsDown: '4', _print: '0' },
-          py: { base: '8', xsDown: '5', _print: '0' },
-        })}
-      >
+      <main class={mainClass}>
         <slot />
       </main>
     </div>
