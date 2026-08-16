@@ -4,7 +4,7 @@
 // on-demand: the loop calls invalidate() only while the car or its steering
 // is still changing. When nothing moves, the canvas goes idle.
 
-import { memo, useImperativeHandle, useMemo, useRef, type Ref } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useFrame, useThree } from '@react-three/fiber';
 import { OrthographicCamera, MapControls } from '@react-three/drei';
@@ -17,10 +17,17 @@ import {
 import type { CarState } from '@/tools/driving-visualizer/sim/CarModel';
 import { useKeyboardInput } from '@/tools/driving-visualizer/sim/useKeyboardInput';
 import {
+  addAppListener,
   useAppDispatch,
   useAppSelector,
 } from '@/tools/driving-visualizer/store/index';
 import { setTelemetry } from '@/tools/driving-visualizer/store/telemetrySlice';
+import {
+  centerCamera,
+  centerSteering,
+  clearTraces,
+  resetPose,
+} from '@/tools/driving-visualizer/store/sceneActions';
 import { Car } from './Car';
 import { SweptPath, type SweptPathHandle } from './SweptPath';
 import { getSceneColors } from './theme';
@@ -35,27 +42,11 @@ export interface TelemetryData {
   driving: boolean;
 }
 
-/** Imperative actions the toolbar drives from outside the Canvas. */
-export interface SceneHandle {
-  reset(): void;
-  clearTraces(): void;
-  centerSteering(): void;
-  centerCamera(): void;
-}
-
-export interface SceneProps {
-  ref?: Ref<SceneHandle>;
-}
-
 const INITIAL_HALF_HEIGHT = 30; // Visible half-height, in meters, at default zoom.
 const TELEMETRY_INTERVAL_MS = 66; // About 15 Hz panel updates.
 const STEERING_EPS = 1e-4;
 
-// Scene is memoized. It has no props besides the imperative ref, so this
-// keeps it from reconciling the R3F subtree when the parent re-renders.
-export const Scene = memo(function Scene({
-  ref,
-}: SceneProps): React.ReactElement {
+export function Scene(): React.ReactElement {
   const invalidate = useThree((s) => s.invalidate);
   const camera = useThree((s) => s.camera);
   const size = useThree((s) => s.size);
@@ -90,34 +81,55 @@ export const Scene = memo(function Scene({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      reset() {
-        carStateRef.current = createInitialState();
-        invalidate();
-      },
-      clearTraces() {
-        sweptPathRef.current?.clear();
-        invalidate();
-      },
-      centerSteering() {
-        carStateRef.current = { ...carStateRef.current, steeringAngle: 0 };
-        invalidate();
-      },
-      centerCamera() {
-        const { x, y } = carStateRef.current;
-        const controls = controlsRef.current;
-        if (controls) {
-          controls.target.set(x, y, 0);
-          camera.position.set(x, y, 100);
-          controls.update();
-        }
-        invalidate();
-      },
-    }),
-    [invalidate, camera],
-  );
+  // Listen for the toolbar's scene commands (see store/sceneActions.ts) and
+  // apply them imperatively to the refs the frame loop owns.
+  useEffect(() => {
+    const unsubscribers = [
+      dispatch(
+        addAppListener({
+          actionCreator: resetPose,
+          effect: () => {
+            carStateRef.current = createInitialState();
+            invalidate();
+          },
+        }),
+      ),
+      dispatch(
+        addAppListener({
+          actionCreator: clearTraces,
+          effect: () => {
+            sweptPathRef.current?.clear();
+            invalidate();
+          },
+        }),
+      ),
+      dispatch(
+        addAppListener({
+          actionCreator: centerSteering,
+          effect: () => {
+            carStateRef.current = { ...carStateRef.current, steeringAngle: 0 };
+            invalidate();
+          },
+        }),
+      ),
+      dispatch(
+        addAppListener({
+          actionCreator: centerCamera,
+          effect: () => {
+            const { x, y } = carStateRef.current;
+            const controls = controlsRef.current;
+            if (controls) {
+              controls.target.set(x, y, 0);
+              camera.position.set(x, y, 100);
+              controls.update();
+            }
+            invalidate();
+          },
+        }),
+      ),
+    ];
+    return () => unsubscribers.forEach((unsubscribe) => unsubscribe());
+  }, [dispatch, invalidate, camera]);
 
   useFrame((_, delta) => {
     const dt = Math.min(delta, 0.1);
@@ -210,4 +222,4 @@ export const Scene = memo(function Scene({
       />
     </>
   );
-});
+}

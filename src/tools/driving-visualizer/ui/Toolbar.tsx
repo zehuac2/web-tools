@@ -7,13 +7,12 @@ import {
   useAppSelector,
 } from '@/tools/driving-visualizer/store/index';
 import { toggleFillVisible } from '@/tools/driving-visualizer/store/uiSlice';
-
-export interface ToolbarProps {
-  onReset: () => void;
-  onClearTraces: () => void;
-  onCenterSteering: () => void;
-  onCenterCamera: () => void;
-}
+import {
+  centerCamera,
+  centerSteering,
+  clearTraces,
+  resetPose,
+} from '@/tools/driving-visualizer/store/sceneActions';
 
 const containerClassName = css({
   display: 'flex',
@@ -22,12 +21,7 @@ const containerClassName = css({
 });
 
 /** Action buttons for the driving visualizer: reset, clear, center, toggles. */
-const Toolbar: FC<ToolbarProps> = ({
-  onReset,
-  onClearTraces,
-  onCenterSteering,
-  onCenterCamera,
-}) => {
+const Toolbar: FC = () => {
   const dispatch = useAppDispatch();
   const fillVisible = useAppSelector((state) => state.ui.fillVisible);
 
@@ -36,21 +30,21 @@ const Toolbar: FC<ToolbarProps> = ({
       <div className={containerClassName}>
         <button
           className={button({ variant: 'subtle' })}
-          onClick={onReset}
+          onClick={() => dispatch(resetPose())}
           title="Reset car to origin"
         >
           ↺ Reset Pose
         </button>
         <button
           className={button({ variant: 'subtle' })}
-          onClick={onClearTraces}
+          onClick={() => dispatch(clearTraces())}
           title="Clear corner trails"
         >
           ⌫ Clear Traces
         </button>
         <button
           className={button({ variant: 'subtle' })}
-          onClick={onCenterSteering}
+          onClick={() => dispatch(centerSteering())}
           title="Recenter steering (also: C key)"
         >
           ⟵ Center Steering
@@ -64,7 +58,7 @@ const Toolbar: FC<ToolbarProps> = ({
         </button>
         <button
           className={button({ variant: 'subtle' })}
-          onClick={onCenterCamera}
+          onClick={() => dispatch(centerCamera())}
           title="Jump camera to car"
         >
           ⊙ Follow Car
