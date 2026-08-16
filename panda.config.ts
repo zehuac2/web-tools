@@ -2,6 +2,7 @@ import { defineConfig } from '@pandacss/dev';
 import { buttonRecipe } from './src/recipes/button.recipe';
 import { cardRecipe } from './src/recipes/card.recipe';
 import { controlRecipe } from './src/recipes/control.recipe';
+import { overlayRecipe } from './src/recipes/overlay.recipe';
 import { panelRecipe } from './src/recipes/panel.recipe';
 
 export default defineConfig({
@@ -289,8 +290,17 @@ export default defineConfig({
         button: buttonRecipe,
         card: cardRecipe,
         control: controlRecipe,
+        overlay: overlayRecipe,
         panel: panelRecipe,
       },
+    },
+  },
+
+  // `OverlayPanel` forwards `placement` as a prop, so the static extractor
+  // cannot tell which variants are in use. Emit all of them.
+  staticCss: {
+    recipes: {
+      overlay: [{ placement: ['*'] }],
     },
   },
 

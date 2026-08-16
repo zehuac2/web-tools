@@ -6,49 +6,30 @@ import Toolbar from './ui/Toolbar';
 import ParameterPanel from './ui/ParameterPanel';
 import Controls from './ui/Controls';
 
-import { css, cx } from 'styled-system/css';
-import { card } from 'styled-system/recipes';
+import { css } from 'styled-system/css';
+
+// The page mounts this island in a `position: relative` full-bleed `<main>`.
+// Absolute positioning skips the `<astro-island>` wrapper, which has no height
+// of its own and would collapse a percentage-height chain.
+const rootClassName = css({ position: 'absolute', inset: '[0]' });
 
 const DrivingVisualizer: FC = () => {
   return (
-    <div
-      className={css({
-        display: 'grid',
-        gap: '6',
-        gridTemplateColumns: {
-          base: 'auto',
-          lg: '[1fr 370px]',
-        },
-        alignItems: { lg: 'start' },
-      })}
-    >
-      <section
-        className={cx(
-          card(),
-          css({
-            p: '0',
-            overflow: 'hidden',
-            height: { base: '[70vh]', lg: '[min(70vh,720px)]' },
-          }),
-        )}
+    <div className={rootClassName}>
+      <Canvas
+        orthographic
+        frameloop="demand"
+        style={{ width: '100%', height: '100%', display: 'block' }}
       >
-        <Canvas
-          orthographic
-          frameloop="demand"
-          style={{ width: '100%', height: '100%', display: 'block' }}
-        >
-          <Scene />
-        </Canvas>
-      </section>
+        <Scene />
+      </Canvas>
 
-      <div
-        className={css({ display: 'flex', flexDirection: 'column', gap: '6' })}
-      >
-        <Telemetry />
-        <Toolbar />
-        <ParameterPanel />
-        <Controls />
-      </div>
+      {/* The panels follow the canvas in the DOM, so they paint over it
+          without needing a z-index. Each one pins itself to a corner. */}
+      <Toolbar />
+      <Telemetry />
+      <ParameterPanel />
+      <Controls />
     </div>
   );
 };

@@ -10,13 +10,26 @@ The root `AGENTS.md` applies. This file adds tool-specific rules.
 
 ```
 App.tsx                 Entry point. Wraps the tool in the Redux <Provider>.
-DrivingVisualizer.tsx   Two-column grid. R3F <Canvas> on the left, panels on the right.
+DrivingVisualizer.tsx   Full-bleed R3F <Canvas> with four floating overlay panels.
 sim/                    Pure simulation. No React, no three.js.
 scene/                  The R3F scene graph. Owns every three.js object.
 store/                  Redux Toolkit store, slices, and scene commands.
-ui/                     Sidebar panels. Plain data and store hooks only.
+ui/                     Overlay panels. Plain data and store hooks only.
 testStore.tsx           Test-only `renderWithStore` helper.
 ```
+
+This tool is the one exception to the repo's two-column tool layout. The page
+passes `fullBleed` to `ToolLayout`, which turns the page shell into a `100dvh`
+flex column and makes `<main>` a `position: relative` box that fills everything
+below the header. The page never scrolls.
+
+`DrivingVisualizer.tsx` covers that box with `position: absolute; inset: 0`.
+Positioning absolutely, rather than with a `height: 100%` chain, is deliberate:
+`client:only` islands mount inside an `<astro-island>` element, and a percentage
+height would collapse there.
+
+The `<Canvas>` is the first child, in normal flow. The four panels follow it, so
+DOM order alone paints them on top and no `z-index` is needed.
 
 - `sim/CarModel.ts` — bicycle model math: `step`, `getCorners`, `turningRadius`,
   `DEFAULT_PARAMS`. State anchors at the rear axle center.
@@ -32,6 +45,8 @@ testStore.tsx           Test-only `renderWithStore` helper.
   type lives in `scene/Scene.tsx` and is re-exported here.
 - `store/uiSlice.ts` — fill visibility.
 - `store/sceneActions.ts` — toolbar commands. See "Scene commands" below.
+- `ui/OverlayPanel.tsx` — the glass panel shell every overlay uses. It takes a
+  `placement` and applies the shared `overlay()` recipe.
 
 ## Data flow
 
@@ -103,6 +118,13 @@ Add a new command the same way: one `createAction`, one dispatch site, one
   exposes `SweptPathHandle` through `useImperativeHandle`.
 - three.js materials cannot read CSS variables. Use `getSceneColors()` from
   `scene/theme.ts`. Do not hard-code color strings in scene files.
+- Each `ui/` panel wraps itself in `OverlayPanel` and owns its own `placement`.
+  Do not position panels from `DrivingVisualizer.tsx`.
+- `OverlayPanel` passes `placement` through as a prop, so Panda cannot see which
+  variants are used. `panda.config.ts` emits them all through `staticCss`. Add
+  any new placement there too.
+- The panels overlap each other below `lg`. Keep them short at that size: the
+  toolbar wraps into rows and the parameter sliders start collapsed.
 
 ## Store
 

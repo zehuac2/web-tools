@@ -66,6 +66,9 @@ second styling system (no MUI, no Emotion, no NativeWind, no inline
   `subtle` (toolbar/secondary), or `ghost`; `pressed` styles an active toggle.
 - `control()` — text/number/select input styling (border, focus ring, radius).
 - `panel()` — muted bordered sub-panel (info boxes, telemetry, breakdowns).
+- `overlay({ placement })` — translucent HUD panel that floats over a full-bleed
+  canvas. `placement` is `topLeft`, `topRight`, `bottomCenter`, or
+  `bottomRight`. Only the driving visualizer uses it.
 
 Tokens live in `panda.config.ts` under `theme.extend.tokens` / `semanticTokens`.
 Reach for a semantic token (`fg.default`, `border.default`, `bg.canvas`,
@@ -74,9 +77,14 @@ token's resolved CSS value, read it through `token()`/`getPropertyValue()`,
 following the pattern in `src/tools/driving-visualizer/scene/theme.ts` and
 `src/tools/grid-maker/components/Grid/theme.ts`.
 
-Every tool page uses the same two-column layout: primary output/canvas on the
+Most tool pages use the same two-column layout: primary output/canvas on the
 left in a `card()`, a `370px` settings/controls `card()` on the right
 (`gridTemplateColumns: { base: 'auto', lg: '[1fr 370px]' }`).
+
+The driving visualizer is the exception. Its page passes `fullBleed` to
+`ToolLayout`, so the tool fills the viewport below the header and floats
+`overlay()` panels over the canvas. `fullBleed` also stops the page scrolling.
+Use it only for a tool that must own the whole viewport.
 
 ## Style guide
 
