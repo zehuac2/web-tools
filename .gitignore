@@ -29,3 +29,5 @@ styled-system-studio/
 
 # test artifacts
 coverage/
+
+.vscode/
