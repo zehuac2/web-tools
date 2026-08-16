@@ -45,7 +45,7 @@ const Configuration: FC<ConfigurationProps> = ({ className, onSubmit }) => {
   const labelClassName = css({
     textAlign: { base: 'left', sm: 'right' },
     gridColumn: 1,
-    fontSize: 'ui13',
+    fontSize: 'sm',
     fontWeight: 'semibold',
     color: 'fg.default',
   });
@@ -54,17 +54,15 @@ const Configuration: FC<ConfigurationProps> = ({ className, onSubmit }) => {
     gridColumn: { base: 1, sm: 2 },
     color: 'danger.fg',
     margin: '0',
-    fontSize: 'ui12',
+    fontSize: 'xs',
   });
 
   return (
     <div className={cx(card(), className)}>
-      <div className={css({ fontSize: 'ui16', fontWeight: 'ui' })}>
-        Settings
-      </div>
+      <div className={css({ fontSize: 'md', fontWeight: 'ui' })}>Settings</div>
       <div
         className={css({
-          fontSize: 'ui13',
+          fontSize: 'sm',
           color: 'fg.muted',
           mt: '1',
         })}

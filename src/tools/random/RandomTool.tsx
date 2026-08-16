@@ -55,7 +55,7 @@ const RandomTool: FC<RandomToolProps> = () => {
         <div
           aria-label="output"
           className={css({
-            fontSize: 'ui16',
+            fontSize: 'md',
             fontWeight: 'ui',
             wordBreak: 'break-all',
             mb: '4',

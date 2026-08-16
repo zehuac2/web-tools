@@ -20,7 +20,7 @@ const fieldClassName = css({
   gap: '1',
 });
 const labelClassName = css({
-  fontSize: 'ui13',
+  fontSize: 'sm',
   fontWeight: 'semibold',
   color: 'fg.default',
 });
@@ -30,7 +30,7 @@ const checkboxRowClassName = css({
   alignItems: 'center',
   gap: '2',
 });
-const checkboxLabelClassName = css({ fontSize: 'ui14', color: 'fg.default' });
+const checkboxLabelClassName = css({ fontSize: 'sm', color: 'fg.default' });
 
 /** One configurable section of the generated random string. */
 const RandomSection: FC<RandomSectionProps> = ({

@@ -29,7 +29,7 @@ const fieldClassName = css({
   gap: '1',
 });
 const labelClassName = css({
-  fontSize: 'ui13',
+  fontSize: 'sm',
   fontWeight: 'semibold',
   color: 'fg.default',
 });

@@ -60,12 +60,12 @@ const App: FC = () => {
               display: { _print: 'none' },
             })}
           >
-            <div className={css({ fontSize: 'ui16', fontWeight: 'ui' })}>
+            <div className={css({ fontSize: 'md', fontWeight: 'ui' })}>
               Preview
             </div>
             <div
               className={css({
-                fontSize: 'ui13',
+                fontSize: 'sm',
                 color: 'fg.muted',
                 mt: '1',
               })}

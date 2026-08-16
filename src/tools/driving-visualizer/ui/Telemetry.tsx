@@ -10,7 +10,7 @@ const rowClassName = css({
   display: 'flex',
   justifyContent: 'space-between',
   gap: '4',
-  fontSize: 'ui13',
+  fontSize: 'sm',
   py: '1',
 });
 

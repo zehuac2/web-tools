@@ -16,7 +16,7 @@ const rowClassName = css({
   display: 'flex',
   alignItems: 'center',
   gap: '2.5',
-  fontSize: 'ui13',
+  fontSize: 'sm',
   color: 'fg.default',
 });
 

@@ -81,13 +81,6 @@ export default defineConfig({
           md: { value: '10px' },
         },
         spacing: {},
-        fontSizes: {
-          ui12: { value: '12px' },
-          ui13: { value: '13px' },
-          ui14: { value: '14px' },
-          ui16: { value: '16px' },
-          ui20: { value: '20px' },
-        },
         fontWeights: {
           demibold: { value: '650' },
         },

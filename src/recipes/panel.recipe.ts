@@ -12,6 +12,6 @@ export const panelRecipe = defineRecipe({
     borderColor: 'border.default',
     bg: 'bg.canvas',
     color: 'fg.muted',
-    fontSize: 'ui13',
+    fontSize: 'sm',
   },
 });

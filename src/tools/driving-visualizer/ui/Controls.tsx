@@ -9,7 +9,7 @@ import OverlayPanel from './OverlayPanel';
 const panelClassName = css({ display: { base: 'none', lg: 'block' } });
 
 const lineClassName = css({
-  fontSize: 'ui13',
+  fontSize: 'sm',
   color: 'fg.muted',
   lineHeight: '[1.8]',
 });
@@ -24,7 +24,7 @@ const keyClassName = css({
   px: '1',
   color: 'fg.default',
   fontFamily: 'mono',
-  fontSize: 'ui12',
+  fontSize: 'xs',
   mr: '1',
 });
 

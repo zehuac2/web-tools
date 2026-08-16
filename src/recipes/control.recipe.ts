@@ -16,7 +16,7 @@ export const controlRecipe = defineRecipe({
     bg: 'bg.canvas',
     color: 'fg.default',
     fontFamily: 'body',
-    fontSize: 'ui14',
+    fontSize: 'sm',
     outline: 'none',
   },
 });
