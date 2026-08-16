@@ -8,7 +8,7 @@
 | UI islands      | React 19 (`client:only="react"`) + React Compiler                |
 | Styling         | Panda CSS (single design system, `src/recipes/`)                 |
 | Forms           | react-hook-form (grid-maker, receipt-splitter)                   |
-| State           | Redux Toolkit (random only)                                      |
+| State           | Redux Toolkit (random, driving-visualizer)                       |
 | 3D              | three.js via @react-three/fiber + drei (driving-visualizer only) |
 | Tests           | Vitest + Testing Library                                         |
 | Package manager | Bun                                                              |
@@ -113,33 +113,11 @@ Foo.displayName = 'Foo';
 export default Foo;
 ```
 
-## Driving-visualizer invariants
+## Driving visualizer
 
-`src/tools/driving-visualizer` is a declarative @react-three/fiber tree with one
-imperative `useFrame` loop. These invariants carried over from the original
-standalone project and must not be lost:
-
-- `Scene` runs a single `useFrame` loop. It advances car state held in a
-  `useRef` and mutates the car group and wheel objects directly. Never call
-  `setState` per frame — physics state must never live in React state.
-- Rendering is on-demand (`frameloop="demand"`). The loop calls `invalidate()`
-  only while the car or its steering is still changing. Imperative actions and
-  `MapControls` also call `invalidate()` when needed. When nothing moves, the
-  canvas stays idle.
-- Telemetry pushes to React at ~15 Hz (throttled), not every frame.
-- Toolbar actions reach the scene through the `SceneHandle` imperative ref
-  (`reset`, `clearTraces`, `centerSteering`, `centerCamera`).
-- Z-layering: grid `z = 0`, traces `z = 0.01`, car body `z = 0.02`, wheels
-  `z = 0.03`.
-- `SweptPath` pre-allocates a `Float32Array` of `MAX_POINTS` per corner and
-  grows it in place with `setDrawRange` — it never reallocates per frame.
-- `src/tools/driving-visualizer/ui/` components take only plain data and
-  callback props. They must not import from `scene/`.
-- World axes: X right, Y up, `z = 0` plane. `heading = 0` points along +X;
-  headings increase counterclockwise. The car starts facing +Y.
-
-See `src/tools/driving-visualizer/sim/CarModel.ts` for the kinematic bicycle
-model math.
+`src/tools/driving-visualizer` has its own AGENTS.md. It covers the data flow,
+the simulation and rendering invariants, the scene-command mechanism, and the
+layer rules. Read it before you change that tool.
 
 ## Notes
 

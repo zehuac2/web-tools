@@ -4,7 +4,7 @@
 // on-demand: the loop calls invalidate() only while the car or its steering
 // is still changing. When nothing moves, the canvas goes idle.
 
-import { memo, useImperativeHandle, useMemo, useRef, type Ref } from 'react';
+import { useEffect, useEffectEvent, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useFrame, useThree } from '@react-three/fiber';
 import { OrthographicCamera, MapControls } from '@react-three/drei';
@@ -13,15 +13,24 @@ import {
   getCorners,
   createInitialState,
   turningRadius,
-} from '@/tools/driving-visualizer/sim/CarModel.ts';
-import type {
-  CarParams,
-  CarState,
-} from '@/tools/driving-visualizer/sim/CarModel.ts';
-import { useKeyboardInput } from '@/tools/driving-visualizer/sim/useKeyboardInput.ts';
-import { Car } from './Car.tsx';
-import { SweptPath, type SweptPathHandle } from './SweptPath.tsx';
-import { getSceneColors } from './theme.ts';
+} from '@/tools/driving-visualizer/sim/CarModel';
+import type { CarState } from '@/tools/driving-visualizer/sim/CarModel';
+import { useKeyboardInput } from '@/tools/driving-visualizer/sim/useKeyboardInput';
+import {
+  addAppListener,
+  useAppDispatch,
+  useAppSelector,
+} from '@/tools/driving-visualizer/store/index';
+import { setTelemetry } from '@/tools/driving-visualizer/store/telemetrySlice';
+import {
+  centerCamera,
+  centerSteering,
+  clearTraces,
+  resetPose,
+} from '@/tools/driving-visualizer/store/sceneActions';
+import { Car } from './Car';
+import { SweptPath, type SweptPathHandle } from './SweptPath';
+import { getSceneColors } from './theme';
 
 export interface TelemetryData {
   x: number;
@@ -33,37 +42,18 @@ export interface TelemetryData {
   driving: boolean;
 }
 
-/** Imperative actions the toolbar drives from outside the Canvas. */
-export interface SceneHandle {
-  reset(): void;
-  clearTraces(): void;
-  centerSteering(): void;
-  centerCamera(): void;
-}
-
-export interface SceneProps {
-  params: CarParams;
-  fillVisible: boolean;
-  onTelemetry: (data: TelemetryData) => void;
-  ref?: Ref<SceneHandle>;
-}
-
 const INITIAL_HALF_HEIGHT = 30; // Visible half-height, in meters, at default zoom.
 const TELEMETRY_INTERVAL_MS = 66; // About 15 Hz panel updates.
 const STEERING_EPS = 1e-4;
 
-// Scene is memoized. This stops the ~15 Hz telemetry-driven App re-render
-// from reconciling the whole R3F subtree. Scene's props stay referentially
-// stable across those ticks.
-export const Scene = memo(function Scene({
-  params,
-  fillVisible,
-  onTelemetry,
-  ref,
-}: SceneProps): React.ReactElement {
+export function Scene(): React.ReactElement {
   const invalidate = useThree((s) => s.invalidate);
   const camera = useThree((s) => s.camera);
   const size = useThree((s) => s.size);
+
+  const dispatch = useAppDispatch();
+  const params = useAppSelector((state) => state.carParams);
+  const fillVisible = useAppSelector((state) => state.ui.fillVisible);
 
   const colors = useMemo(getSceneColors, []);
 
@@ -91,34 +81,53 @@ export const Scene = memo(function Scene({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      reset() {
-        carStateRef.current = createInitialState();
-        invalidate();
-      },
-      clearTraces() {
-        sweptPathRef.current?.clear();
-        invalidate();
-      },
-      centerSteering() {
-        carStateRef.current = { ...carStateRef.current, steeringAngle: 0 };
-        invalidate();
-      },
-      centerCamera() {
-        const { x, y } = carStateRef.current;
-        const controls = controlsRef.current;
-        if (controls) {
-          controls.target.set(x, y, 0);
-          camera.position.set(x, y, 100);
-          controls.update();
-        }
-        invalidate();
-      },
-    }),
-    [invalidate, camera],
-  );
+  // Effect events for the toolbar's scene commands (see store/sceneActions.ts).
+  // Each always reads the latest invalidate/camera without making the
+  // subscribing effect below re-run when they change.
+  const onResetPose = useEffectEvent(() => {
+    carStateRef.current = createInitialState();
+    invalidate();
+  });
+  const onClearTraces = useEffectEvent(() => {
+    sweptPathRef.current?.clear();
+    invalidate();
+  });
+  const onCenterSteering = useEffectEvent(() => {
+    carStateRef.current = { ...carStateRef.current, steeringAngle: 0 };
+    invalidate();
+  });
+  const onCenterCamera = useEffectEvent(() => {
+    const { x, y } = carStateRef.current;
+    const controls = controlsRef.current;
+    if (controls) {
+      controls.target.set(x, y, 0);
+      camera.position.set(x, y, 100);
+      controls.update();
+    }
+    invalidate();
+  });
+
+  // Subscribe those effect events to the toolbar's scene commands.
+  useEffect(() => {
+    const unsubscribers = [
+      dispatch(
+        addAppListener({ actionCreator: resetPose, effect: onResetPose }),
+      ),
+      dispatch(
+        addAppListener({ actionCreator: clearTraces, effect: onClearTraces }),
+      ),
+      dispatch(
+        addAppListener({
+          actionCreator: centerSteering,
+          effect: onCenterSteering,
+        }),
+      ),
+      dispatch(
+        addAppListener({ actionCreator: centerCamera, effect: onCenterCamera }),
+      ),
+    ];
+    return () => unsubscribers.forEach((unsubscribe) => unsubscribe());
+  }, [dispatch]);
 
   useFrame((_, delta) => {
     const dt = Math.min(delta, 0.1);
@@ -145,15 +154,17 @@ export const Scene = memo(function Scene({
     const now = performance.now();
     if (now - lastTelemetryRef.current >= TELEMETRY_INTERVAL_MS) {
       lastTelemetryRef.current = now;
-      onTelemetry({
-        x: next.x,
-        y: next.y,
-        headingDeg: (next.heading * 180) / Math.PI,
-        steeringDeg: (next.steeringAngle * 180) / Math.PI,
-        turningRadius: turningRadius(params, next.steeringAngle),
-        speed: params.speed,
-        driving: input.throttle !== 0,
-      });
+      dispatch(
+        setTelemetry({
+          x: next.x,
+          y: next.y,
+          headingDeg: (next.heading * 180) / Math.PI,
+          steeringDeg: (next.steeringAngle * 180) / Math.PI,
+          turningRadius: turningRadius(params, next.steeringAngle),
+          speed: params.speed,
+          driving: input.throttle !== 0,
+        }),
+      );
     }
 
     // On-demand continuation: keeps the loop alive only while something changes.
@@ -209,4 +220,4 @@ export const Scene = memo(function Scene({
       />
     </>
   );
-});
+}

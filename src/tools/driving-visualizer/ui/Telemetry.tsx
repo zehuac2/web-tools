@@ -1,11 +1,7 @@
 import { type FC } from 'react';
 import { css } from 'styled-system/css';
 import ToolPanel from '@/components/ToolPanel';
-import type { TelemetryData } from '@/tools/driving-visualizer/scene/Scene.tsx';
-
-export interface TelemetryProps {
-  data: TelemetryData;
-}
+import { useAppSelector } from '@/tools/driving-visualizer/store/index';
 
 const rowClassName = css({
   display: 'flex',
@@ -38,8 +34,9 @@ function fmt(n: number, decimals = 2): string {
 }
 
 /** Read-only live telemetry readout for the driving visualizer. */
-const Telemetry: FC<TelemetryProps> = ({ data }) => {
-  const { x, y, headingDeg, steeringDeg, turningRadius, speed, driving } = data;
+const Telemetry: FC = () => {
+  const { x, y, headingDeg, steeringDeg, turningRadius, speed, driving } =
+    useAppSelector((state) => state.telemetry);
 
   // Normalize heading to [0, 360).
   const hdg = ((headingDeg % 360) + 360) % 360;

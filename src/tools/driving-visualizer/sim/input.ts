@@ -2,7 +2,7 @@
 // input frame. The held-state tracking and window listeners live in the
 // `useKeyboardInput` hook. This function stays pure and testable.
 
-import type { StepInput } from './CarModel.ts';
+import type { StepInput } from './CarModel';
 
 /** Key codes that should not scroll the page while driving. */
 export const SCROLL_KEYS = [

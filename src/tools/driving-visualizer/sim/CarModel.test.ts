@@ -8,7 +8,7 @@ import {
   type CarParams,
   type CarState,
   type StepInput,
-} from './CarModel.ts';
+} from './CarModel';
 
 // A convenient base input. It has no motion, no steering, no centering, and
 // no hold.

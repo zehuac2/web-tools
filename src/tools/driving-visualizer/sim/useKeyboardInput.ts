@@ -3,8 +3,8 @@
 // render loop can call this every frame without triggering re-renders.
 
 import { useCallback, useEffect, useRef } from 'react';
-import type { StepInput } from './CarModel.ts';
-import { mapKeysToInput, SCROLL_KEYS } from './input.ts';
+import type { StepInput } from './CarModel';
+import { mapKeysToInput, SCROLL_KEYS } from './input';
 
 export interface UseKeyboardInput {
   /** Read the current input frame from the held keys. Stable identity. */

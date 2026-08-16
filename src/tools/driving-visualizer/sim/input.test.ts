@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { mapKeysToInput, SCROLL_KEYS } from './input.ts';
+import { mapKeysToInput, SCROLL_KEYS } from './input';
 
 function held(...codes: string[]): Set<string> {
   return new Set(codes);

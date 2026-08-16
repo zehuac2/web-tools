@@ -39,8 +39,8 @@
 
 import { useImperativeHandle, useMemo, type Ref } from 'react';
 import * as THREE from 'three';
-import type { BodyCorners } from '@/tools/driving-visualizer/sim/CarModel.ts';
-import { getSceneColors, type SceneColors } from './theme.ts';
+import type { BodyCorners } from '@/tools/driving-visualizer/sim/CarModel';
+import { getSceneColors, type SceneColors } from './theme';
 
 const CORNER_KEYS: (keyof BodyCorners)[] = [
   'frontLeft',

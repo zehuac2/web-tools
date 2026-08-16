@@ -6,8 +6,8 @@
 
 import { useMemo, type RefObject } from 'react';
 import * as THREE from 'three';
-import type { CarParams } from '@/tools/driving-visualizer/sim/CarModel.ts';
-import { getSceneColors } from './theme.ts';
+import type { CarParams } from '@/tools/driving-visualizer/sim/CarModel';
+import { getSceneColors } from './theme';
 
 const WHEEL_W = 0.22; // Visual wheel width, in meters.
 const WHEEL_L = 0.5; // Visual wheel length, in meters.

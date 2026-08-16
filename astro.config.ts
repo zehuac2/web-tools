@@ -18,15 +18,16 @@ export default defineConfig({
             groups: [
               {
                 name: (id) => {
-                  if (/\/node_modules\/three\//.test(id))
-                    return 'vendor-three';
+                  if (/\/node_modules\/three\//.test(id)) return 'vendor-three';
                 },
                 minShareCount: 0,
                 minSize: 0,
               },
               {
                 name: (id) => {
-                  if (/\/node_modules\/(@react-three\/|three-stdlib\/)/.test(id))
+                  if (
+                    /\/node_modules\/(@react-three\/|three-stdlib\/)/.test(id)
+                  )
                     return 'vendor-r3f';
                 },
                 minShareCount: 0,
