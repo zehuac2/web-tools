@@ -25,4 +25,4 @@ const telemetrySlice = createSlice({
 });
 
 export const { setTelemetry } = telemetrySlice.actions;
-export default telemetrySlice.reducer;
+export default telemetrySlice;

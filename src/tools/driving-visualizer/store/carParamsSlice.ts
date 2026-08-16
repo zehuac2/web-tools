@@ -40,4 +40,4 @@ export const {
   setSteeringRate,
   setSpeed,
 } = carParamsSlice.actions;
-export default carParamsSlice.reducer;
+export default carParamsSlice;

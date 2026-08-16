@@ -19,4 +19,4 @@ const uiSlice = createSlice({
 });
 
 export const { toggleFillVisible } = uiSlice.actions;
-export default uiSlice.reducer;
+export default uiSlice;
