@@ -4,7 +4,7 @@
 // on-demand: the loop calls invalidate() only while the car or its steering
 // is still changing. When nothing moves, the canvas goes idle.
 
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useEffectEvent, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useFrame, useThree } from '@react-three/fiber';
 import { OrthographicCamera, MapControls } from '@react-three/drei';
@@ -81,55 +81,53 @@ export function Scene(): React.ReactElement {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Listen for the toolbar's scene commands (see store/sceneActions.ts) and
-  // apply them imperatively to the refs the frame loop owns.
+  // Effect events for the toolbar's scene commands (see store/sceneActions.ts).
+  // Each always reads the latest invalidate/camera without making the
+  // subscribing effect below re-run when they change.
+  const onResetPose = useEffectEvent(() => {
+    carStateRef.current = createInitialState();
+    invalidate();
+  });
+  const onClearTraces = useEffectEvent(() => {
+    sweptPathRef.current?.clear();
+    invalidate();
+  });
+  const onCenterSteering = useEffectEvent(() => {
+    carStateRef.current = { ...carStateRef.current, steeringAngle: 0 };
+    invalidate();
+  });
+  const onCenterCamera = useEffectEvent(() => {
+    const { x, y } = carStateRef.current;
+    const controls = controlsRef.current;
+    if (controls) {
+      controls.target.set(x, y, 0);
+      camera.position.set(x, y, 100);
+      controls.update();
+    }
+    invalidate();
+  });
+
+  // Subscribe those effect events to the toolbar's scene commands.
   useEffect(() => {
     const unsubscribers = [
       dispatch(
-        addAppListener({
-          actionCreator: resetPose,
-          effect: () => {
-            carStateRef.current = createInitialState();
-            invalidate();
-          },
-        }),
+        addAppListener({ actionCreator: resetPose, effect: onResetPose }),
       ),
       dispatch(
-        addAppListener({
-          actionCreator: clearTraces,
-          effect: () => {
-            sweptPathRef.current?.clear();
-            invalidate();
-          },
-        }),
+        addAppListener({ actionCreator: clearTraces, effect: onClearTraces }),
       ),
       dispatch(
         addAppListener({
           actionCreator: centerSteering,
-          effect: () => {
-            carStateRef.current = { ...carStateRef.current, steeringAngle: 0 };
-            invalidate();
-          },
+          effect: onCenterSteering,
         }),
       ),
       dispatch(
-        addAppListener({
-          actionCreator: centerCamera,
-          effect: () => {
-            const { x, y } = carStateRef.current;
-            const controls = controlsRef.current;
-            if (controls) {
-              controls.target.set(x, y, 0);
-              camera.position.set(x, y, 100);
-              controls.update();
-            }
-            invalidate();
-          },
-        }),
+        addAppListener({ actionCreator: centerCamera, effect: onCenterCamera }),
       ),
     ];
     return () => unsubscribers.forEach((unsubscribe) => unsubscribe());
-  }, [dispatch, invalidate, camera]);
+  }, [dispatch]);
 
   useFrame((_, delta) => {
     const dt = Math.min(delta, 0.1);
