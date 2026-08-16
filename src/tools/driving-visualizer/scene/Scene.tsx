@@ -14,11 +14,13 @@ import {
   createInitialState,
   turningRadius,
 } from '@/tools/driving-visualizer/sim/CarModel';
-import type {
-  CarParams,
-  CarState,
-} from '@/tools/driving-visualizer/sim/CarModel';
+import type { CarState } from '@/tools/driving-visualizer/sim/CarModel';
 import { useKeyboardInput } from '@/tools/driving-visualizer/sim/useKeyboardInput';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '@/tools/driving-visualizer/store/index';
+import { setTelemetry } from '@/tools/driving-visualizer/store/telemetrySlice';
 import { Car } from './Car';
 import { SweptPath, type SweptPathHandle } from './SweptPath';
 import { getSceneColors } from './theme';
@@ -42,9 +44,6 @@ export interface SceneHandle {
 }
 
 export interface SceneProps {
-  params: CarParams;
-  fillVisible: boolean;
-  onTelemetry: (data: TelemetryData) => void;
   ref?: Ref<SceneHandle>;
 }
 
@@ -52,18 +51,18 @@ const INITIAL_HALF_HEIGHT = 30; // Visible half-height, in meters, at default zo
 const TELEMETRY_INTERVAL_MS = 66; // About 15 Hz panel updates.
 const STEERING_EPS = 1e-4;
 
-// Scene is memoized. This stops the ~15 Hz telemetry-driven App re-render
-// from reconciling the whole R3F subtree. Scene's props stay referentially
-// stable across those ticks.
+// Scene is memoized. It has no props besides the imperative ref, so this
+// keeps it from reconciling the R3F subtree when the parent re-renders.
 export const Scene = memo(function Scene({
-  params,
-  fillVisible,
-  onTelemetry,
   ref,
 }: SceneProps): React.ReactElement {
   const invalidate = useThree((s) => s.invalidate);
   const camera = useThree((s) => s.camera);
   const size = useThree((s) => s.size);
+
+  const dispatch = useAppDispatch();
+  const params = useAppSelector((state) => state.carParams);
+  const fillVisible = useAppSelector((state) => state.ui.fillVisible);
 
   const colors = useMemo(getSceneColors, []);
 
@@ -145,15 +144,17 @@ export const Scene = memo(function Scene({
     const now = performance.now();
     if (now - lastTelemetryRef.current >= TELEMETRY_INTERVAL_MS) {
       lastTelemetryRef.current = now;
-      onTelemetry({
-        x: next.x,
-        y: next.y,
-        headingDeg: (next.heading * 180) / Math.PI,
-        steeringDeg: (next.steeringAngle * 180) / Math.PI,
-        turningRadius: turningRadius(params, next.steeringAngle),
-        speed: params.speed,
-        driving: input.throttle !== 0,
-      });
+      dispatch(
+        setTelemetry({
+          x: next.x,
+          y: next.y,
+          headingDeg: (next.heading * 180) / Math.PI,
+          steeringDeg: (next.steeringAngle * 180) / Math.PI,
+          turningRadius: turningRadius(params, next.steeringAngle),
+          speed: params.speed,
+          driving: input.throttle !== 0,
+        }),
+      );
     }
 
     // On-demand continuation: keeps the loop alive only while something changes.
