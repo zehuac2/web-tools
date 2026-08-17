@@ -86,6 +86,27 @@ The driving visualizer is the exception. Its page passes `fullBleed` to
 `overlay()` panels over the canvas. `fullBleed` also stops the page scrolling.
 Use it only for a tool that must own the whole viewport.
 
+## Dark mode
+
+`<html data-theme>` always holds a concrete `light` or `dark`. The blocking
+inline script in `ToolLayout.astro` resolves the stored preference before first
+paint, so nothing downstream ever sees `system`.
+
+- Give a color both values: `value: { base: …, _dark: … }`. The `_dark`
+  condition is defined in `panda.config.ts` and keys off `data-theme`.
+- Because every recipe styles color through semantic tokens, a new dark value
+  themes the whole DOM. Do not add `_dark` inside a recipe or a `css()` call.
+- A `scene.*` dark value must be opaque. three.js `Color` drops alpha.
+- `grid.text` and `grid.line` have **no** dark value on purpose. The grid is a
+  print artifact, so it stays dark ink on white paper in both themes.
+- `src/theme/` owns the preference. `theme.ts` holds the pure helpers and the
+  single DOM writer, `store.ts` the `useSyncExternalStore` backing, and
+  `useTheme.ts` the `useTheme`/`useResolvedTheme` hooks. The header toggle and
+  each tool are separate React roots, so the store broadcasts on a window event.
+  React Context cannot cross that boundary.
+- `applyTheme` sets the attribute before it notifies. Code that resolves tokens
+  with `getComputedStyle` depends on that order.
+
 ## Style guide
 
 ### Documentation and comments

@@ -7,7 +7,7 @@
 import { useMemo, type RefObject } from 'react';
 import * as THREE from 'three';
 import type { CarParams } from '@/tools/driving-visualizer/sim/CarModel';
-import { getSceneColors } from './theme';
+import type { SceneColors } from './theme';
 
 const WHEEL_W = 0.22; // Visual wheel width, in meters.
 const WHEEL_L = 0.5; // Visual wheel length, in meters.
@@ -78,6 +78,8 @@ function Wheel({
 
 export interface CarProps {
   params: CarParams;
+  /** Resolved `scene.*` colors. `Scene` owns the theme read. */
+  colors: SceneColors;
   groupRef: RefObject<THREE.Group | null>;
   frontLeftRef: RefObject<THREE.Object3D | null>;
   frontRightRef: RefObject<THREE.Object3D | null>;
@@ -85,12 +87,12 @@ export interface CarProps {
 
 export function Car({
   params,
+  colors,
   groupRef,
   frontLeftRef,
   frontRightRef,
 }: CarProps): React.ReactElement {
   const { wheelbase, frontOverhang, rearOverhang, bodyWidth } = params;
-  const colors = useMemo(getSceneColors, []);
 
   const bodyLength = wheelbase + frontOverhang + rearOverhang;
   // Body center, relative to the rear axle. The rear axle is the group's

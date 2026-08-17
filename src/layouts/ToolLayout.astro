@@ -1,6 +1,8 @@
 ---
 import { css } from 'styled-system/css';
 import { REPO_URL, TOOLS } from '@/meta';
+import ThemeToggle from '@/components/ThemeToggle';
+import { THEME_BOOT_SCRIPT } from '@/theme/bootScript';
 import '@/styles/global.css';
 
 export interface Props {
@@ -63,6 +65,12 @@ const mainClass = fullBleed
 
 <html lang="en">
   <head>
+    {/*
+    Runs before first paint and sets a concrete `data-theme` on `<html>`, so
+    the page never flashes the wrong theme. It must stay inline and blocking,
+    and it must stay first. Source: `src/theme/bootScript.ts`.
+    */}
+    <script is:inline set:html={THEME_BOOT_SCRIPT} />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
@@ -178,6 +186,8 @@ const mainClass = fullBleed
             >
               GitHub
             </a>
+
+            <ThemeToggle client:load />
           </nav>
         </div>
       </header>

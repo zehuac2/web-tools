@@ -31,6 +31,7 @@ import {
 import { Car } from './Car';
 import { SweptPath, type SweptPathHandle } from './SweptPath';
 import { getSceneColors } from './theme';
+import { useResolvedTheme } from '@/theme/useTheme';
 
 export interface TelemetryData {
   x: number;
@@ -55,7 +56,15 @@ export function Scene(): React.ReactElement {
   const params = useAppSelector((state) => state.carParams);
   const fillVisible = useAppSelector((state) => state.ui.fillVisible);
 
-  const colors = useMemo(getSceneColors, []);
+  // `Scene` is the only file in `scene/` that reads the theme. It passes the
+  // resolved colors down, so the 12 `getComputedStyle` reads happen once per
+  // theme change instead of once per consumer.
+  //
+  // This reads the DOM during render, which is impure. Moving it to an effect
+  // would paint one committed frame with the old background and car colors,
+  // so accept the read: it is idempotent and only runs on a theme flip.
+  const resolvedTheme = useResolvedTheme();
+  const colors = useMemo(getSceneColors, [resolvedTheme]);
 
   // Shared mutable state. This never triggers React re-renders.
   const carStateRef = useRef<CarState>(createInitialState());
@@ -211,9 +220,10 @@ export function Scene(): React.ReactElement {
         <meshBasicMaterial color={colors.origin} />
       </mesh>
 
-      <SweptPath ref={sweptPathRef} fillVisible={fillVisible} />
+      <SweptPath ref={sweptPathRef} fillVisible={fillVisible} colors={colors} />
       <Car
         params={params}
+        colors={colors}
         groupRef={carGroupRef}
         frontLeftRef={frontLeftRef}
         frontRightRef={frontRightRef}

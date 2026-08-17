@@ -12,7 +12,12 @@ body {
   font-family: var(--fonts-body);
 }
 
+/* Printed output is always on white paper, in either theme. */
 @media print {
+  html {
+    color-scheme: light;
+  }
+
   body {
     background: white;
   }

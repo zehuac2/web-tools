@@ -118,6 +118,15 @@ Add a new command the same way: one `createAction`, one dispatch site, one
   exposes `SweptPathHandle` through `useImperativeHandle`.
 - three.js materials cannot read CSS variables. Use `getSceneColors()` from
   `scene/theme.ts`. Do not hard-code color strings in scene files.
+- `Scene` is the only file here that reads the theme. It calls
+  `useResolvedTheme()` from `@/theme`, re-resolves the colors, and passes them
+  to `Car` and `SweptPath` as a prop. Do not call `getSceneColors()` anywhere
+  else: each call costs 12 `getComputedStyle` reads.
+- `SweptPath` never rebuilds its buffers on a theme change. It writes the
+  material colors in place through `applyColors`, then calls `invalidate()`
+  once. A rebuild would erase every trace the user drew. Its buffers live in a
+  `useRef`, not a `useMemo`, because React Compiler may re-key a dependency
+  array.
 - Each `ui/` panel wraps itself in `OverlayPanel` and owns its own `placement`.
   Do not position panels from `DrivingVisualizer.tsx`.
 - `OverlayPanel` passes `placement` through as a prop, so Panda cannot see which
