@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 
-import { THEME_BOOT_SCRIPT } from './bootScript';
+import layoutSource from '../layouts/ToolLayout.astro?raw';
+
 import {
   applyTheme,
   isThemePreference,
@@ -10,6 +11,7 @@ import {
   resolveTheme,
   systemTheme,
   writePreference,
+  PREFERS_DARK_QUERY,
   THEME_ATTRIBUTE,
   THEME_CHANGE_EVENT,
   THEME_STORAGE_KEY,
@@ -189,8 +191,22 @@ describe('applyTheme', () => {
   });
 });
 
-describe('THEME_BOOT_SCRIPT', () => {
-  const run = () => new Function(THEME_BOOT_SCRIPT)();
+describe('boot script in ToolLayout.astro', () => {
+  // Extract the real script body from the layout, so the test runs the shipped
+  // code instead of a copy. The parameter names must match the `define:vars`
+  // keys in ToolLayout.astro.
+  const match = layoutSource.match(/<script\b([^>]*)>([\s\S]*?)<\/script>/);
+  if (!match?.[1].includes('define:vars')) {
+    throw new Error('boot script not found in ToolLayout.astro');
+  }
+  const body = match[2];
+
+  const run = () =>
+    new Function('attribute', 'darkQuery', 'storageKey', body)(
+      THEME_ATTRIBUTE,
+      PREFERS_DARK_QUERY,
+      THEME_STORAGE_KEY,
+    );
   const applied = () => document.documentElement.getAttribute(THEME_ATTRIBUTE);
 
   it.each(['dark', 'light'])('applies the stored %s preference', (stored) => {

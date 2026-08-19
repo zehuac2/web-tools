@@ -2,7 +2,11 @@
 import { css } from 'styled-system/css';
 import { REPO_URL, TOOLS } from '@/meta';
 import ThemeToggle from '@/components/ThemeToggle';
-import { THEME_BOOT_SCRIPT } from '@/theme/bootScript';
+import {
+  PREFERS_DARK_QUERY,
+  THEME_ATTRIBUTE,
+  THEME_STORAGE_KEY,
+} from '@/theme/theme';
 import '@/styles/global.css';
 
 export interface Props {
@@ -65,12 +69,35 @@ const mainClass = fullBleed
 
 <html lang="en">
   <head>
-    {/*
-    Runs before first paint and sets a concrete `data-theme` on `<html>`, so
-    the page never flashes the wrong theme. It must stay inline and blocking,
-    and it must stay first. Source: `src/theme/bootScript.ts`.
-    */}
-    <script is:inline set:html={THEME_BOOT_SCRIPT} />
+    {
+      /*
+      Runs before first paint and sets a concrete `data-theme` on `<html>`, so
+      the page never flashes the wrong theme. It must stay inline and blocking,
+      and it must stay first. `define:vars` injects the constants from
+      `theme.ts`, so the keys cannot drift between the two.
+      */
+    }
+    <script
+      is:inline
+      define:vars={{
+        attribute: THEME_ATTRIBUTE,
+        darkQuery: PREFERS_DARK_QUERY,
+        storageKey: THEME_STORAGE_KEY,
+      }}
+    >
+      (function () {
+        var fallback = 'light';
+        try {
+          var stored = localStorage.getItem(storageKey);
+          if (stored !== 'light' && stored !== 'dark') {
+            stored = matchMedia(darkQuery).matches ? 'dark' : fallback;
+          }
+          document.documentElement.setAttribute(attribute, stored);
+        } catch {
+          document.documentElement.setAttribute(attribute, fallback);
+        }
+      })();
+    </script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
