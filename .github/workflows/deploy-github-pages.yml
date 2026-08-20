@@ -7,8 +7,12 @@ on:
   workflow_dispatch:
 
 jobs:
+  check:
+    uses: ./.github/workflows/check.yml
+
   build:
     runs-on: ubuntu-latest
+    needs: check
 
     steps:
       - name: Checkout code
@@ -22,12 +26,6 @@ jobs:
 
       - name: Generate Panda CSS
         run: bun run prepare
-
-      - name: Run check
-        run: bun run check
-
-      - name: Run tests
-        run: bun run test
 
       - name: Build the app
         run: bun run build
