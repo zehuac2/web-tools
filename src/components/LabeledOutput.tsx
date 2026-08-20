@@ -15,7 +15,7 @@ const rowClassName = css({
   py: '2',
 });
 
-const labelClassName = css({ fontSize: 'ui14', color: 'fg.muted' });
+const labelClassName = css({ fontSize: 'sm', color: 'fg.muted' });
 
 const LabeledOutput: FC<LabeledOutputProps> = ({
   className,
@@ -26,7 +26,7 @@ const LabeledOutput: FC<LabeledOutputProps> = ({
   const isPlaceholder = value === '?';
 
   const valueClassName = css({
-    fontSize: highlight ? 'ui20' : 'ui14',
+    fontSize: highlight ? 'xl' : 'sm',
     fontWeight: highlight ? 'ui' : 'normal',
     color: highlight
       ? isPlaceholder

@@ -29,7 +29,7 @@ const fieldClassName = css({
   gap: '1',
 });
 const labelClassName = css({
-  fontSize: 'ui13',
+  fontSize: 'sm',
   fontWeight: 'semibold',
   color: 'fg.default',
 });
@@ -83,7 +83,7 @@ const App: FC = () => {
         gap: '6',
         gridTemplateColumns: {
           base: 'auto',
-          lg: '[1fr 370px]',
+          lg: '[1fr token(sizes.sidebar)]',
         },
         alignItems: { lg: 'start' },
       })}

@@ -25,7 +25,7 @@ const RandomTool: FC<RandomToolProps> = () => {
         gap: '6',
         gridTemplateColumns: {
           base: 'auto',
-          lg: '[1fr 370px]',
+          lg: '[1fr token(sizes.sidebar)]',
         },
         alignItems: { lg: 'start' },
       })}
@@ -55,7 +55,7 @@ const RandomTool: FC<RandomToolProps> = () => {
         <div
           aria-label="output"
           className={css({
-            fontSize: 'ui16',
+            fontSize: 'md',
             fontWeight: 'ui',
             wordBreak: 'break-all',
             mb: '4',

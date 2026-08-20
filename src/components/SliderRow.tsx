@@ -16,12 +16,12 @@ const rowClassName = css({
   display: 'flex',
   alignItems: 'center',
   gap: '2.5',
-  fontSize: 'ui13',
+  fontSize: 'sm',
   color: 'fg.default',
 });
 
 const labelClassName = css({
-  width: '[150px]',
+  width: '36',
   color: 'fg.muted',
   textAlign: 'right',
   flexShrink: 0,
@@ -34,14 +34,14 @@ const sliderClassName = css({
 });
 
 const valueClassName = css({
-  width: '[52px]',
+  width: '14',
   textAlign: 'right',
   fontVariantNumeric: 'tabular-nums',
   flexShrink: 0,
 });
 
 const unitClassName = css({
-  width: '[30px]',
+  width: '8',
   color: 'fg.muted',
   flexShrink: 0,
 });

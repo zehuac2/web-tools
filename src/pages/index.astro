@@ -46,8 +46,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
           >
             <div
               class={css({
-                width: '[36px]',
-                height: '[36px]',
+                width: '9',
+                height: '9',
                 display: 'grid',
                 placeItems: 'center',
                 borderRadius: 'card',
@@ -59,8 +59,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
             >
               {tool.glyph}
             </div>
-            <div class={css({ fontSize: 'ui16', fontWeight: 'ui' })}>{tool.title}</div>
-            <div class={css({ fontSize: 'ui13', color: 'fg.muted' })}>{tool.blurb}</div>
+            <div class={css({ fontSize: 'md', fontWeight: 'ui' })}>{tool.title}</div>
+            <div class={css({ fontSize: 'sm', color: 'fg.muted' })}>{tool.blurb}</div>
           </div>
         </a>
       ))

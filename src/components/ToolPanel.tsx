@@ -21,9 +21,9 @@ const ToolPanel: FC<ToolPanelProps> = ({
 }) => {
   return (
     <div className={cx(card(), className)}>
-      <div className={css({ fontSize: 'ui16', fontWeight: 'ui' })}>{title}</div>
+      <div className={css({ fontSize: 'md', fontWeight: 'ui' })}>{title}</div>
       {subtitle && (
-        <div className={css({ fontSize: 'ui13', color: 'fg.muted', mt: '1' })}>
+        <div className={css({ fontSize: 'sm', color: 'fg.muted', mt: '1' })}>
           {subtitle}
         </div>
       )}

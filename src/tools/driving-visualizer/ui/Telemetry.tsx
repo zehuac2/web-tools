@@ -4,13 +4,13 @@ import { useAppSelector } from '@/tools/driving-visualizer/store/index';
 import OverlayPanel from './OverlayPanel';
 
 // Hold a floor width so the rows do not reflow as the values change.
-const panelClassName = css({ minWidth: '[200px]' });
+const panelClassName = css({ minWidth: 'telemetry' });
 
 const rowClassName = css({
   display: 'flex',
   justifyContent: 'space-between',
   gap: '4',
-  fontSize: 'ui13',
+  fontSize: 'sm',
   py: '1',
 });
 
@@ -23,9 +23,9 @@ const valueClassName = css({
 function indicatorClassName(driving: boolean): string {
   return css({
     display: 'inline-block',
-    width: '[8px]',
-    height: '[8px]',
-    borderRadius: '[50%]',
+    width: '2',
+    height: '2',
+    borderRadius: 'full',
     bg: driving ? 'positive.fg' : 'border.strong',
     mr: '2',
     verticalAlign: 'middle',
