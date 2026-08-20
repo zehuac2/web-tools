@@ -37,10 +37,11 @@
 // The index buffer grows in place, the same way as the position buffer
 // (addUpdateRange + setDrawRange). Only the 24 newest entries get re-uploaded.
 
-import { useImperativeHandle, useMemo, type Ref } from 'react';
+import { useEffect, useImperativeHandle, useRef, type Ref } from 'react';
+import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import type { BodyCorners } from '@/tools/driving-visualizer/sim/CarModel';
-import { getSceneColors, type SceneColors } from './theme';
+import type { SceneColors } from './theme';
 
 const CORNER_KEYS: (keyof BodyCorners)[] = [
   'frontLeft',
@@ -72,6 +73,8 @@ export interface SweptPathHandle {
 // One corner's polyline trail, together with its GPU-side objects.
 interface CornerLine {
   geometry: THREE.BufferGeometry;
+  /** Held for in-place color writes. `Line['material']` is a union type. */
+  material: THREE.LineBasicMaterial;
   /** Flat (x, y, z) vertex array. Only indices [0, count*3) hold valid data. */
   positions: Float32Array;
   /** Number of points written so far. */
@@ -82,6 +85,8 @@ interface CornerLine {
 // All GPU objects that one SweptPath instance owns.
 interface Buffers {
   lines: Record<keyof BodyCorners, CornerLine>;
+  /** Held for in-place color writes, as with `CornerLine.material`. */
+  fillMaterial: THREE.MeshBasicMaterial;
   fillGeo: THREE.BufferGeometry;
   /** Flat (x, y, z) vertex array for the fill mesh. 4 vertices per row. */
   fillPositions: Float32Array;
@@ -99,15 +104,13 @@ function createBuffers(colors: SceneColors): Buffers {
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     geometry.setDrawRange(0, 0);
-    const line = new THREE.Line(
-      geometry,
-      new THREE.LineBasicMaterial({
-        color: cornerColor(colors, key),
-        depthTest: false,
-      }),
-    );
+    const material = new THREE.LineBasicMaterial({
+      color: cornerColor(colors, key),
+      depthTest: false,
+    });
+    const line = new THREE.Line(geometry, material);
     line.frustumCulled = false;
-    lines[key] = { geometry, positions, count: 0, line };
+    lines[key] = { geometry, material, positions, count: 0, line };
   }
 
   // Fill mesh: each row has 4 vertices, one per corner. Successive rows form
@@ -118,19 +121,25 @@ function createBuffers(colors: SceneColors): Buffers {
   fillGeo.setAttribute('position', new THREE.BufferAttribute(fillPositions, 3));
   fillGeo.setIndex(new THREE.BufferAttribute(fillIndices, 1));
   fillGeo.setDrawRange(0, 0);
-  const fillMesh = new THREE.Mesh(
-    fillGeo,
-    new THREE.MeshBasicMaterial({
-      color: colors.fill,
-      opacity: 0.08,
-      transparent: true,
-      side: THREE.DoubleSide,
-      depthTest: false,
-    }),
-  );
+  const fillMaterial = new THREE.MeshBasicMaterial({
+    color: colors.fill,
+    opacity: 0.08,
+    transparent: true,
+    side: THREE.DoubleSide,
+    depthTest: false,
+  });
+  const fillMesh = new THREE.Mesh(fillGeo, fillMaterial);
   fillMesh.frustumCulled = false;
 
-  return { lines, fillGeo, fillPositions, fillIndices, fillMesh, fillCount: 0 };
+  return {
+    lines,
+    fillMaterial,
+    fillGeo,
+    fillPositions,
+    fillIndices,
+    fillMesh,
+    fillCount: 0,
+  };
 }
 
 const INDICES_PER_ROW_PAIR = 24; // 4 edge strips × 2 triangles × 3 verts.
@@ -264,16 +273,48 @@ function clear(buffers: Buffers): void {
   buffers.fillGeo.setDrawRange(0, 0);
 }
 
+/**
+ * Repaint the trails and the fill in place.
+ *
+ * The buffers, their draw ranges, and every drawn point stay untouched, so a
+ * theme change never erases the user's traces.
+ *
+ * This does not set `material.needsUpdate`. A color is a uniform, and that
+ * flag recompiles the shader program, which a color change does not need.
+ */
+function applyColors(buffers: Buffers, colors: SceneColors): void {
+  for (const key of CORNER_KEYS) {
+    buffers.lines[key].material.color.set(cornerColor(colors, key));
+  }
+  buffers.fillMaterial.color.set(colors.fill);
+}
+
 export interface SweptPathProps {
   fillVisible: boolean;
+  colors: SceneColors;
   ref?: Ref<SweptPathHandle>;
 }
 
 export function SweptPath({
   fillVisible,
+  colors,
   ref,
 }: SweptPathProps): React.ReactElement {
-  const buffers = useMemo(() => createBuffers(getSceneColors()), []);
+  const invalidate = useThree((s) => s.invalidate);
+
+  // Created once for the lifetime of the component. This must never be a
+  // `useMemo` over `colors`: React Compiler treats a dependency array as a
+  // hint and may re-key it, and a rebuild drops every point the user drew.
+  const buffersRef = useRef<Buffers | null>(null);
+  buffersRef.current ??= createBuffers(colors);
+  const buffers = buffersRef.current;
+
+  // The materials are written outside R3F, so the canvas does not know it is
+  // stale. The canvas renders on demand, so ask for exactly one frame.
+  useEffect(() => {
+    applyColors(buffers, colors);
+    invalidate();
+  }, [buffers, colors, invalidate]);
 
   useImperativeHandle(
     ref,

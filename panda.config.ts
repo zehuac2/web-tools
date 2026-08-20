@@ -22,6 +22,18 @@ export default defineConfig({
 
   cssVarRoot: ':where(:root, :host)',
 
+  // Key the light/dark conditions off `data-theme` on `<html>`, which the
+  // inline script in `ToolLayout.astro` always sets to a concrete value.
+  // Panda's built-in `_dark` is class-based (`.dark &`), so override it.
+  // The `&[...]` half matters: `globalCss` targets `html, body`, and `<html>`
+  // is the element that carries the attribute.
+  conditions: {
+    extend: {
+      dark: '&[data-theme=dark], [data-theme=dark] &',
+      light: '&[data-theme=light], [data-theme=light] &',
+    },
+  },
+
   // Useful for theme customization
   theme: {
     extend: {
@@ -44,8 +56,23 @@ export default defineConfig({
             // the driving visualizer's ground grid needs a solid swatch
             // instead of the a1/a2 overlay tokens used in the DOM.
             6: { value: '#cbd5e1' },
+            // 7-13 are the dark-theme ramp. 1-6 stay the light ramp.
+            7: { value: '#0b1220' },
+            8: { value: '#111c2e' },
+            9: { value: '#16223a' },
+            10: { value: '#e2e8f0' },
+            11: { value: '#94a3b8' },
+            // Opaque dark-theme scene swatches, for the same three.js reason
+            // as gray.6 above.
+            12: { value: '#334155' },
+            13: { value: '#475569' },
             a1: { value: 'rgba(15, 23, 42, 0.12)' },
             a2: { value: 'rgba(15, 23, 42, 0.18)' },
+            // Dark-theme overlays. a3 is the glass tint; a4/a5 are light-ink
+            // borders, the dark counterparts of a1/a2.
+            a3: { value: 'rgba(11, 18, 32, 0.8)' },
+            a4: { value: 'rgba(226, 232, 240, 0.14)' },
+            a5: { value: 'rgba(226, 232, 240, 0.24)' },
           },
           blue: {
             a1: { value: 'rgba(2, 132, 199, 0.65)' },
@@ -53,27 +80,38 @@ export default defineConfig({
             // Opaque variant. three.js Color drops alpha, so the driving
             // visualizer's scene materials need a solid swatch, not a1/a2.
             solid: { value: '#0284c7' },
+            // Dark-theme counterparts. The light blue reads against a dark
+            // surface where blue.a1/a2/solid go muddy.
+            a3: { value: 'rgba(56, 189, 248, 0.7)' },
+            a4: { value: 'rgba(56, 189, 248, 0.22)' },
+            light: { value: '#38bdf8' },
           },
           red: {
             1: { value: '#b91c1c' },
+            2: { value: '#f87171' },
           },
           green: {
             1: { value: '#15803d' },
+            2: { value: '#4ade80' },
           },
           // Swept-trail colors for the driving visualizer. Saturated enough
           // to stay legible against the light canvas. All opaque, for the
-          // same reason as blue.solid above.
+          // same reason as blue.solid above. The `2` variants are the
+          // lighter dark-theme counterparts.
           amber: {
             1: { value: '#d97706' },
+            2: { value: '#fbbf24' },
           },
           teal: {
             1: { value: '#0d9488' },
+            2: { value: '#2dd4bf' },
           },
           violet: {
             1: { value: '#7c3aed' },
           },
           rose: {
             1: { value: '#e11d48' },
+            2: { value: '#fb7185' },
           },
         },
         spacing: {},
@@ -99,135 +137,160 @@ export default defineConfig({
         colors: {
           bg: {
             canvas: {
-              value: '{colors.gray.1}',
-              description: 'Page background (light)',
+              value: { base: '{colors.gray.1}', _dark: '{colors.gray.7}' },
+              description: 'Page background',
             },
             subtle: {
-              value: '{colors.gray.2}',
-              description: 'Page background subtle (light)',
+              value: { base: '{colors.gray.2}', _dark: '{colors.gray.8}' },
+              description: 'Page background subtle',
             },
           },
           surface: {
             card: {
-              value: '{colors.white}',
+              value: { base: '{colors.white}', _dark: '{colors.gray.9}' },
               description: 'Card/background surface',
             },
             glass: {
-              value: '{colors.white.a1}',
+              value: { base: '{colors.white.a1}', _dark: '{colors.gray.a3}' },
               description: 'Translucent surface for sticky header',
             },
           },
           fg: {
-            default: { value: '{colors.gray.4}', description: 'Primary text' },
-            muted: { value: '{colors.gray.3}', description: 'Muted text' },
-            hover: { value: '{colors.gray.3}', description: 'Hovered text' },
+            default: {
+              value: { base: '{colors.gray.4}', _dark: '{colors.gray.10}' },
+              description: 'Primary text',
+            },
+            muted: {
+              value: { base: '{colors.gray.3}', _dark: '{colors.gray.11}' },
+              description: 'Muted text',
+            },
+            hover: {
+              value: { base: '{colors.gray.3}', _dark: '{colors.gray.10}' },
+              description: 'Hovered text',
+            },
             onBrand: {
-              value: '{colors.white}',
+              // Brand inverts between themes, so its text color inverts too.
+              value: { base: '{colors.white}', _dark: '{colors.gray.4}' },
               description: 'Text on brand surfaces',
             },
           },
           border: {
             default: {
-              value: '{colors.gray.a1}',
+              value: { base: '{colors.gray.a1}', _dark: '{colors.gray.a4}' },
               description: 'Subtle border',
             },
             strong: {
-              value: '{colors.gray.a2}',
+              value: { base: '{colors.gray.a2}', _dark: '{colors.gray.a5}' },
               description: 'Stronger border (e.g. canvas preview)',
             },
           },
           brand: {
+            // Monochrome and inverted: near-black on light, near-white on dark.
             solid: {
-              value: '{colors.gray.4}',
+              value: { base: '{colors.gray.4}', _dark: '{colors.gray.10}' },
               description: 'Primary action background',
             },
             hover: {
-              value: '{colors.gray.5}',
+              value: { base: '{colors.gray.5}', _dark: '{colors.white}' },
               description: 'Primary action hover background',
             },
           },
           accent: {
             solid: {
-              value: '{colors.blue.a1}',
+              value: { base: '{colors.blue.a1}', _dark: '{colors.blue.a3}' },
               description: 'Accent for active toggle buttons',
             },
             subtle: {
-              value: '{colors.blue.a2}',
+              value: { base: '{colors.blue.a2}', _dark: '{colors.blue.a4}' },
               description: 'Accent background for active toggle buttons',
             },
           },
           focus: {
             border: {
-              value: '{colors.blue.a1}',
+              value: { base: '{colors.blue.a1}', _dark: '{colors.blue.a3}' },
               description: 'Focus border color',
             },
           },
           danger: {
-            fg: { value: '{colors.red.1}', description: 'Error text color' },
+            fg: {
+              value: { base: '{colors.red.1}', _dark: '{colors.red.2}' },
+              description: 'Error text color',
+            },
           },
           positive: {
             fg: {
-              value: '{colors.green.1}',
+              value: { base: '{colors.green.1}', _dark: '{colors.green.2}' },
               description: 'Positive result text color',
             },
           },
+          // The grid is a print artifact: the canvas paints white paper and
+          // exports a PNG. It stays dark-ink-on-white in both themes, so
+          // these deliberately have no `_dark` value.
           grid: {
             text: {
               value: '{colors.gray.4}',
-              description: 'Grid text color',
+              description: 'Grid text color (print, theme-independent)',
             },
             line: {
               value: '{colors.gray.a1}',
-              description: 'Grid line color',
+              description: 'Grid line color (print, theme-independent)',
             },
           },
+          // three.js Color drops alpha, so every `_dark` value here must
+          // resolve to an opaque swatch.
           scene: {
             bg: {
-              value: '{colors.gray.1}',
+              value: { base: '{colors.gray.1}', _dark: '{colors.gray.7}' },
               description: 'Driving visualizer 3D scene background',
             },
             grid: {
-              value: '{colors.gray.6}',
+              value: { base: '{colors.gray.6}', _dark: '{colors.gray.12}' },
               description: 'Driving visualizer ground grid lines',
             },
             origin: {
-              value: '{colors.red.1}',
+              value: { base: '{colors.red.1}', _dark: '{colors.red.2}' },
               description: 'Origin marker',
             },
             body: {
-              value: '{colors.blue.solid}',
+              value: {
+                base: '{colors.blue.solid}',
+                _dark: '{colors.blue.light}',
+              },
               description: 'Car body fill',
             },
             bodyOutline: {
-              value: '{colors.gray.4}',
+              value: { base: '{colors.gray.4}', _dark: '{colors.gray.10}' },
               description: 'Car body outline',
             },
             wheel: {
-              value: '{colors.gray.3}',
+              value: { base: '{colors.gray.3}', _dark: '{colors.gray.13}' },
               description: 'Car wheel fill',
             },
             wheelOutline: {
-              value: '{colors.gray.4}',
+              value: { base: '{colors.gray.4}', _dark: '{colors.gray.10}' },
               description: 'Car wheel outline',
             },
             trailFrontLeft: {
-              value: '{colors.blue.solid}',
+              value: {
+                base: '{colors.blue.solid}',
+                _dark: '{colors.blue.light}',
+              },
               description: 'Front-left corner swept-trail color',
             },
             trailFrontRight: {
-              value: '{colors.teal.1}',
+              value: { base: '{colors.teal.1}', _dark: '{colors.teal.2}' },
               description: 'Front-right corner swept-trail color',
             },
             trailRearLeft: {
-              value: '{colors.amber.1}',
+              value: { base: '{colors.amber.1}', _dark: '{colors.amber.2}' },
               description: 'Rear-left corner swept-trail color',
             },
             trailRearRight: {
-              value: '{colors.rose.1}',
+              value: { base: '{colors.rose.1}', _dark: '{colors.rose.2}' },
               description: 'Rear-right corner swept-trail color',
             },
             fill: {
-              value: '{colors.gray.4}',
+              value: { base: '{colors.gray.4}', _dark: '{colors.gray.10}' },
               description: 'Swept-area translucent fill tint',
             },
           },
@@ -249,16 +312,25 @@ export default defineConfig({
           },
         },
         shadows: {
+          // A dark surface needs a darker, heavier shadow to read at all.
           card: {
-            value: '0 12px 30px rgba(15, 23, 42, 0.08)',
+            value: {
+              base: '0 12px 30px rgba(15, 23, 42, 0.08)',
+              _dark: '0 12px 30px rgba(0, 0, 0, 0.45)',
+            },
             description: 'Card shadow',
           },
           subtle: {
-            value: '0 1px 3px rgba(15, 23, 42, 0.08)',
+            value: {
+              base: '0 1px 3px rgba(15, 23, 42, 0.08)',
+              _dark: '0 1px 3px rgba(0, 0, 0, 0.4)',
+            },
             description: 'Subtle shadow',
           },
           focus: {
-            value: '0 0 0 3px {colors.blue.a2}',
+            // Points at the semantic accent, so it follows the theme with no
+            // _dark branch of its own.
+            value: '0 0 0 3px {colors.accent.subtle}',
             description: 'Focus ring shadow',
           },
         },
@@ -303,6 +375,8 @@ export default defineConfig({
       fontFamily: 'body',
       color: 'fg.default',
       bg: 'bg.canvas',
+      // Makes native scrollbars and form controls follow the theme.
+      colorScheme: { base: 'light', _dark: 'dark' },
     },
   },
 
