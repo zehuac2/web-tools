@@ -14,9 +14,12 @@ import {
   distinctUntilChanged,
 } from 'rxjs';
 
-import { type ConfigurationValues } from '../Configuration';
-import { Papers } from '../papers';
-import { type Inch, type Pixel } from '../units';
+import {
+  type ConfigurationValues,
+  DEFAULT_CONFIGURATION_VALUES,
+} from '@/tools/grid-maker/Configuration';
+import { Papers } from '@/tools/grid-maker/papers';
+import { type Inch, type Pixel } from '@/tools/grid-maker/units';
 
 export interface EventsContextValue {
   readonly paperKey$: BehaviorSubject<keyof typeof Papers>;
@@ -43,13 +46,13 @@ export const EventsProvider: FC<EventsProviderProps> = ({
 }) => {
   const subjects = useMemo(() => {
     const paperKey$ = new BehaviorSubject<keyof typeof Papers>(
-      initialValues?.paperKey ?? 'US_ENVELOPE_9',
+      initialValues?.paperKey ?? DEFAULT_CONFIGURATION_VALUES.paperKey,
     );
     const cellSize$ = new BehaviorSubject<Inch>(
-      initialValues?.cellSize ?? (0.2 as Inch),
+      initialValues?.cellSize ?? DEFAULT_CONFIGURATION_VALUES.cellSize,
     );
     const fontSize$ = new BehaviorSubject<Pixel>(
-      initialValues?.fontSize ?? (6 as Pixel),
+      initialValues?.fontSize ?? DEFAULT_CONFIGURATION_VALUES.fontSize,
     );
 
     const configuration$ = combineLatest({
