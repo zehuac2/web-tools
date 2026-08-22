@@ -155,13 +155,12 @@ const MyComponent = () => {
 - Subscribe to changes using `useBehaviorSubject`;
 - Only pass `BehaviorSubject` to `useBehaviorSubject`;
 
-## Driving visualizer
-
-`src/tools/driving-visualizer` has its own AGENTS.md. It covers the data flow,
-the simulation and rendering invariants, the scene-command mechanism, and the
-layer rules. Read it before you change that tool.
-
 ## Notes
 
 - Do not commit secrets.
 - Do not commit unless the user explicitly asks.
+
+## Tools
+
+- [Driving Visualizer](src/tools/driving-visualizer/AGENTS.md)
+- [Grid Maker](src/tools/grid-maker/AGENTS.md)
