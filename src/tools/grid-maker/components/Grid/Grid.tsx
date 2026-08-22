@@ -1,18 +1,45 @@
 import { type FC, useRef, useEffect, useState, memo } from 'react';
 import { css } from 'styled-system/css';
 
-import type { Pixel } from '@/tools/grid-maker/units';
+import useBehaviorSubject from '@/hooks/react/useBehaviorSubject';
+import { Papers } from '@/tools/grid-maker/papers';
+import { type Inch, type Pixel, inchToPixel } from '@/tools/grid-maker/units';
+import { useEvents } from '@/tools/grid-maker/contexts/EventsContext';
 import InvalidConfiguration from './InvalidConfiguration';
 import { getGridFont, getGridLineVariable, getGridTextVariable } from './theme';
 
 export interface GridProps {
   className?: string;
+}
 
-  cellSize: Pixel;
-  width: Pixel;
-  height: Pixel;
-  fontSize: Pixel;
-  alt?: string;
+export interface GridDimensions {
+  readonly width: Inch;
+  readonly height: Inch;
+  readonly pixelWidth: Pixel;
+  readonly pixelHeight: Pixel;
+  readonly pixelCellSize: Pixel;
+  readonly colCount: number;
+  readonly rowCount: number;
+}
+
+export function calculateGridDimensions(
+  paperKey: keyof typeof Papers,
+  cellSize: Inch,
+): GridDimensions {
+  const paper = Papers[paperKey];
+  const pixelWidth = inchToPixel(paper.width);
+  const pixelHeight = inchToPixel(paper.height);
+  const pixelCellSize = inchToPixel(cellSize);
+
+  return {
+    width: paper.width,
+    height: paper.height,
+    pixelWidth,
+    pixelHeight,
+    pixelCellSize,
+    colCount: pixelCellSize > 0 ? Math.floor(pixelWidth / pixelCellSize) : 0,
+    rowCount: pixelCellSize > 0 ? Math.floor(pixelHeight / pixelCellSize) : 0,
+  };
 }
 
 function drawGridLines(
@@ -69,20 +96,22 @@ function drawGridTexts(
   }
 }
 
-const Grid: FC<GridProps> = ({
-  className,
-  fontSize,
-  cellSize,
-  width,
-  height,
-  alt,
-}) => {
+const Grid: FC<GridProps> = ({ className }) => {
+  const { paperKey$, cellSize$, fontSize$ } = useEvents();
+
+  const paperKey = useBehaviorSubject(paperKey$);
+  const cellSize = useBehaviorSubject(cellSize$);
+  const fontSize = useBehaviorSubject(fontSize$);
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [renderResult, setRenderResult] = useState('');
+  const { width, height, pixelWidth, pixelHeight, pixelCellSize } =
+    calculateGridDimensions(paperKey, cellSize);
+  const alt = `A grid whose width is ${width} inches, and whose height is ${height} inches`;
   const dpr = window.devicePixelRatio;
-  const renderWidth = width * dpr;
-  const renderHeight = height * dpr;
-  const renderCellSize = cellSize * dpr;
+  const renderWidth = pixelWidth * dpr;
+  const renderHeight = pixelHeight * dpr;
+  const renderCellSize = pixelCellSize * dpr;
   const renderFontSize = fontSize * dpr;
 
   useEffect(() => {
@@ -137,7 +166,7 @@ const Grid: FC<GridProps> = ({
     };
   }, [renderWidth, renderHeight, renderCellSize, renderFontSize, dpr]);
 
-  if (cellSize <= 0) {
+  if (pixelCellSize <= 0) {
     // Zero cellSize would cause a massive grid
     return <InvalidConfiguration />;
   }
@@ -159,8 +188,8 @@ const Grid: FC<GridProps> = ({
       {renderResult && (
         <img
           className={className}
-          width={width}
-          height={height}
+          width={pixelWidth}
+          height={pixelHeight}
           src={renderResult}
           alt={alt}
         />

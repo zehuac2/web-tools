@@ -1,4 +1,4 @@
-import type { Inch } from '../units';
+import type { Inch } from '@/tools/grid-maker/units';
 
 export interface Paper {
   readonly displayName: string;

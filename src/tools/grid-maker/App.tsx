@@ -1,119 +1,14 @@
-import { type FC, useDeferredValue } from 'react';
+import { type FC } from 'react';
 
-import { FormProvider, useForm } from 'react-hook-form';
-
-import Grid from './components/Grid';
-import Configuration, { type ConfigurationValues } from './Configuration';
-import { Papers } from './papers';
-import { type Inch, type Pixel, inchToPixel } from './units';
-
-import { css } from 'styled-system/css';
-import { card } from 'styled-system/recipes';
+import { EventsProvider } from './contexts/EventsContext';
+import AppContent from './AppContent';
+import { DEFAULT_CONFIGURATION_VALUES } from './configurationValues';
 
 const App: FC = () => {
-  const form = useForm<ConfigurationValues>({
-    mode: 'onChange',
-    defaultValues: {
-      cellSize: 0.2 as Inch,
-      paperKey: 'US_ENVELOPE_9',
-      fontSize: 6 as Pixel,
-    },
-  });
-  const { watch } = form;
-
-  const paper = Papers[watch('paperKey')];
-  const { width, height } = paper;
-
-  const deferredWidth = useDeferredValue(inchToPixel(width));
-  const deferredHeight = useDeferredValue(inchToPixel(height));
-  const deferredCellSize = useDeferredValue(inchToPixel(watch('cellSize')));
-  const deferredFontSize = useDeferredValue(watch('fontSize'));
-
-  const colCount =
-    deferredCellSize > 0 ? Math.floor(deferredWidth / deferredCellSize) : 0;
-  const rowCount =
-    deferredCellSize > 0 ? Math.floor(deferredHeight / deferredCellSize) : 0;
-
   return (
-    <FormProvider {...form}>
-      <div
-        className={css({
-          display: { base: 'grid', _print: 'block' },
-          gap: '6',
-          gridTemplateColumns: {
-            base: 'auto',
-            lg: '[1fr token(sizes.sidebar)]',
-          },
-          alignItems: {
-            lg: 'stretch',
-          },
-        })}
-      >
-        <section className={card()}>
-          <div
-            className={css({
-              px: '5',
-              py: '4',
-              borderBottom: 'subtle',
-              display: { _print: 'none' },
-            })}
-          >
-            <div className={css({ fontSize: 'md', fontWeight: 'ui' })}>
-              Preview
-            </div>
-            <div
-              className={css({
-                fontSize: 'sm',
-                color: 'fg.muted',
-                mt: '1',
-              })}
-            >
-              {colCount} × {rowCount} grid ({width}" × {height}")
-            </div>
-          </div>
-
-          <div
-            className={css({
-              p: { base: '4', _print: '0' },
-            })}
-          >
-            <div
-              className={css({
-                overflow: { base: 'auto', _print: 'visible' },
-                bg: 'white',
-                border: { base: 'subtle', _print: 'none' },
-                borderRadius: { base: 'inner', _print: '[0]' },
-                p: { base: '4', _print: '0' },
-              })}
-            >
-              <Grid
-                className={css({
-                  display: 'block',
-                  margin: '[0 auto]',
-                  bg: 'white',
-                  border: { base: 'strong', _print: 'none' },
-                  boxShadow: { base: 'subtle', _print: '[none]' },
-                })}
-                width={deferredWidth}
-                height={deferredHeight}
-                cellSize={deferredCellSize}
-                fontSize={deferredFontSize}
-                alt={`A grid whose width is ${width} inches, and whose height is ${height} inches`}
-              />
-            </div>
-          </div>
-        </section>
-
-        <Configuration
-          className={css({
-            display: { _print: 'none' },
-          })}
-          onSubmit={() => {
-            window.print();
-          }}
-        />
-      </div>
-    </FormProvider>
+    <EventsProvider initialValues={DEFAULT_CONFIGURATION_VALUES}>
+      <AppContent />
+    </EventsProvider>
   );
 };
 

@@ -8,7 +8,7 @@
 | UI islands      | React 19 (`client:only="react"`) + React Compiler                |
 | Styling         | Panda CSS (single design system, `src/recipes/`)                 |
 | Forms           | react-hook-form (grid-maker, receipt-splitter)                   |
-| State           | Redux Toolkit (random, driving-visualizer)                       |
+| State           | Redux Toolkit (random, driving-visualizer), RxJS (grid-maker)    |
 | 3D              | three.js via @react-three/fiber + drei (driving-visualizer only) |
 | Tests           | Vitest + Testing Library                                         |
 | Package manager | Bun                                                              |
@@ -142,13 +142,25 @@ Foo.displayName = 'Foo';
 export default Foo;
 ```
 
-## Driving visualizer
+### RxJS
 
-`src/tools/driving-visualizer` has its own AGENTS.md. It covers the data flow,
-the simulation and rendering invariants, the scene-command mechanism, and the
-layer rules. Read it before you change that tool.
+```tsx
+import useBehaviorSubject from '@/hooks/react/useBehaviorSubject';
+
+const MyComponent = () => {
+  const state = useBehaviorSubject(behaviorSubject$);
+};
+```
+
+- Subscribe to changes using `useBehaviorSubject`;
+- Only pass `BehaviorSubject` to `useBehaviorSubject`;
 
 ## Notes
 
 - Do not commit secrets.
 - Do not commit unless the user explicitly asks.
+
+## Tools
+
+- [Driving Visualizer](src/tools/driving-visualizer/AGENTS.md)
+- [Grid Maker](src/tools/grid-maker/AGENTS.md)

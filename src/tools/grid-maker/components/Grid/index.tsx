@@ -1,1 +1,1 @@
-export { default as default } from './Grid';
+export { default as default, calculateGridDimensions } from './Grid';
