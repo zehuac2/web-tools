@@ -55,29 +55,29 @@ describe('EventsContext', () => {
 
     function TestComponent() {
       const {
+        onPaperKeyChange$,
+        onCellSizeChange$,
+        onFontSizeChange$,
         paperKey$,
         cellSize$,
         fontSize$,
-        renderPaperKey$,
-        renderCellSize$,
-        renderFontSize$,
       } = useEvents();
 
-      const renderPaperKey = useBehaviorSubject(renderPaperKey$);
-      const renderCellSize = useBehaviorSubject(renderCellSize$);
-      const renderFontSize = useBehaviorSubject(renderFontSize$);
+      const paperKey = useBehaviorSubject(paperKey$);
+      const cellSize = useBehaviorSubject(cellSize$);
+      const fontSize = useBehaviorSubject(fontSize$);
 
       useEffect(() => {
-        paperKey$.next('US_LETTER');
-        cellSize$.next(0.5 as Inch);
-        fontSize$.next(12 as Pixel);
-      }, [paperKey$, cellSize$, fontSize$]);
+        onPaperKeyChange$.next('US_LETTER');
+        onCellSizeChange$.next(0.5 as Inch);
+        onFontSizeChange$.next(12 as Pixel);
+      }, [onPaperKeyChange$, onCellSizeChange$, onFontSizeChange$]);
 
       return (
         <div>
-          <span data-testid="renderPaperKey">{renderPaperKey}</span>
-          <span data-testid="renderCellSize">{renderCellSize}</span>
-          <span data-testid="renderFontSize">{renderFontSize}</span>
+          <span data-testid="renderPaperKey">{paperKey}</span>
+          <span data-testid="renderCellSize">{cellSize}</span>
+          <span data-testid="renderFontSize">{fontSize}</span>
         </div>
       );
     }
@@ -116,19 +116,19 @@ describe('EventsContext', () => {
   it('Settled configuration ignores an unchanged emission', () => {
     const events = renderEvents();
     const values: ConfigurationValues[] = [];
-    const subscription = events.settledConfiguration$.subscribe((value) =>
+    const subscription = events.configuration$.subscribe((value) =>
       values.push(value),
     );
 
     act(() => {
-      events.cellSize$.next(0.5 as Inch);
+      events.onCellSizeChange$.next(0.5 as Inch);
       vi.advanceTimersByTime(DEBOUNCE_MS);
     });
 
     expect(values).to.have.length(1);
 
     act(() => {
-      events.cellSize$.next(0.5 as Inch);
+      events.onCellSizeChange$.next(0.5 as Inch);
       vi.advanceTimersByTime(DEBOUNCE_MS);
     });
 
@@ -144,8 +144,8 @@ describe('EventsContext', () => {
     );
 
     act(() => {
-      events.cellSize$.next(0.5 as Inch);
-      events.print$.next();
+      events.onCellSizeChange$.next(0.5 as Inch);
+      events.onPrint$.next();
     });
 
     expect(printed).to.have.length(0);
@@ -157,7 +157,7 @@ describe('EventsContext', () => {
     expect(printed).to.have.length(1);
     expect(printed[0].cellSize).to.equal(0.5);
     // The render subjects are flushed before the print request emits.
-    expect(events.renderCellSize$.getValue()).to.equal(0.5);
+    expect(events.cellSize$.getValue()).to.equal(0.5);
     subscription.unsubscribe();
   });
 });

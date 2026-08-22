@@ -19,7 +19,7 @@ const AppContent: FC = () => {
     mode: 'onChange',
     defaultValues: DEFAULT_CONFIGURATION_VALUES,
   });
-  const { print$, printConfiguration$ } = useEvents();
+  const { onPrint$, printConfiguration$ } = useEvents();
 
   // The print dialog opens only after the configuration settles, so the grid
   // in the document matches the values in the form.
@@ -88,7 +88,7 @@ const AppContent: FC = () => {
             display: { _print: 'none' },
           })}
           onSubmit={() => {
-            print$.next();
+            onPrint$.next();
           }}
         />
       </div>

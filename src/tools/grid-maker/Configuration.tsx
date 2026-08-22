@@ -34,7 +34,8 @@ const Configuration: FC<ConfigurationProps> = ({ className, onSubmit }) => {
     formState: { errors },
     handleSubmit,
   } = useFormContext<ConfigurationValues>();
-  const { paperKey$, cellSize$, fontSize$ } = useEvents();
+  const { onPaperKeyChange$, onCellSizeChange$, onFontSizeChange$ } =
+    useEvents();
   const paperSizeId = useId();
 
   const controlClassName = control();
@@ -85,7 +86,7 @@ const Configuration: FC<ConfigurationProps> = ({ className, onSubmit }) => {
           className={controlClassName}
           {...register('paperKey', {
             onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-              paperKey$.next(event.target.value as keyof typeof Papers);
+              onPaperKeyChange$.next(event.target.value as keyof typeof Papers);
             },
           })}
         >
@@ -107,7 +108,7 @@ const Configuration: FC<ConfigurationProps> = ({ className, onSubmit }) => {
           {...register('cellSize', {
             valueAsNumber: true,
             onChange: (event: ChangeEvent<HTMLInputElement>) => {
-              cellSize$.next(event.target.valueAsNumber as Inch);
+              onCellSizeChange$.next(event.target.valueAsNumber as Inch);
             },
             validate: validateInch,
             required: 'Cell size is required',
@@ -129,7 +130,7 @@ const Configuration: FC<ConfigurationProps> = ({ className, onSubmit }) => {
           {...register('fontSize', {
             valueAsNumber: true,
             onChange: (event: ChangeEvent<HTMLInputElement>) => {
-              fontSize$.next(event.target.valueAsNumber as Pixel);
+              onFontSizeChange$.next(event.target.valueAsNumber as Pixel);
             },
             validate: validatePixel,
             required: 'Font size is required',

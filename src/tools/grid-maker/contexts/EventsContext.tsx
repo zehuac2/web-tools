@@ -26,16 +26,15 @@ import { Papers } from '@/tools/grid-maker/papers';
 import { type Inch, type Pixel } from '@/tools/grid-maker/units';
 
 export interface EventsContextValue {
+  readonly onPaperKeyChange$: BehaviorSubject<keyof typeof Papers>;
+  readonly onCellSizeChange$: BehaviorSubject<Inch>;
+  readonly onFontSizeChange$: BehaviorSubject<Pixel>;
+  readonly configuration$: Observable<ConfigurationValues>;
+  readonly onPrint$: Subject<void>;
+  readonly printConfiguration$: Observable<ConfigurationValues>;
   readonly paperKey$: BehaviorSubject<keyof typeof Papers>;
   readonly cellSize$: BehaviorSubject<Inch>;
   readonly fontSize$: BehaviorSubject<Pixel>;
-  readonly configuration$: Observable<ConfigurationValues>;
-  readonly settledConfiguration$: Observable<ConfigurationValues>;
-  readonly print$: Subject<void>;
-  readonly printConfiguration$: Observable<ConfigurationValues>;
-  readonly renderPaperKey$: BehaviorSubject<keyof typeof Papers>;
-  readonly renderCellSize$: BehaviorSubject<Inch>;
-  readonly renderFontSize$: BehaviorSubject<Pixel>;
 }
 
 const EventsContext = createContext<EventsContextValue | null>(null);
@@ -54,63 +53,60 @@ export const EventsProvider: FC<EventsProviderProps> = ({
   // `useState` is used instead of `useMemo`. React can discard a `useMemo`
   // cache, and every subject here holds application state that must survive.
   const [subjects] = useState<EventsContextValue>(() => {
-    const paperKey$ = new BehaviorSubject<keyof typeof Papers>(
+    const onPaperKeyChange$ = new BehaviorSubject<keyof typeof Papers>(
       initialValues?.paperKey ?? DEFAULT_CONFIGURATION_VALUES.paperKey,
     );
-    const cellSize$ = new BehaviorSubject<Inch>(
+    const onCellSizeChange$ = new BehaviorSubject<Inch>(
       initialValues?.cellSize ?? DEFAULT_CONFIGURATION_VALUES.cellSize,
     );
-    const fontSize$ = new BehaviorSubject<Pixel>(
+    const onFontSizeChange$ = new BehaviorSubject<Pixel>(
       initialValues?.fontSize ?? DEFAULT_CONFIGURATION_VALUES.fontSize,
     );
 
-    const configuration$ = combineLatest({
-      paperKey: paperKey$,
-      cellSize: cellSize$,
-      fontSize: fontSize$,
-    });
-
     // `combineLatest` builds a new object for every emission, so the
     // comparator must look at the fields, not the reference.
-    const settledConfiguration$ = configuration$.pipe(
+    const configuration$ = combineLatest({
+      paperKey: onPaperKeyChange$,
+      cellSize: onCellSizeChange$,
+      fontSize: onFontSizeChange$,
+    }).pipe(
       debounceTime(DEBOUNCE_MS),
       distinctUntilChanged(isSameConfiguration),
     );
 
-    const print$ = new Subject<void>();
+    const onPrint$ = new Subject<void>();
 
     // A print request waits for the configuration to settle. This stops a
     // print that starts inside the debounce window from printing the grid
     // drawn for the previous configuration.
-    const printConfiguration$ = print$.pipe(
-      switchMap(() => settledConfiguration$.pipe(take(1))),
+    const printConfiguration$ = onPrint$.pipe(
+      switchMap(() => configuration$.pipe(take(1))),
     );
 
-    const renderPaperKey$ = new BehaviorSubject<keyof typeof Papers>(
-      paperKey$.getValue(),
+    const paperKey$ = new BehaviorSubject<keyof typeof Papers>(
+      onPaperKeyChange$.getValue(),
     );
-    const renderCellSize$ = new BehaviorSubject<Inch>(cellSize$.getValue());
-    const renderFontSize$ = new BehaviorSubject<Pixel>(fontSize$.getValue());
+    const cellSize$ = new BehaviorSubject<Inch>(onCellSizeChange$.getValue());
+    const fontSize$ = new BehaviorSubject<Pixel>(onFontSizeChange$.getValue());
 
     return {
+      onPaperKeyChange$,
+      onCellSizeChange$,
+      onFontSizeChange$,
+      configuration$,
+      onPrint$,
+      printConfiguration$,
       paperKey$,
       cellSize$,
       fontSize$,
-      configuration$,
-      settledConfiguration$,
-      print$,
-      printConfiguration$,
-      renderPaperKey$,
-      renderCellSize$,
-      renderFontSize$,
     };
   });
 
   useEffect(() => {
-    const subscription = subjects.settledConfiguration$.subscribe((values) => {
-      subjects.renderPaperKey$.next(values.paperKey);
-      subjects.renderCellSize$.next(values.cellSize);
-      subjects.renderFontSize$.next(values.fontSize);
+    const subscription = subjects.configuration$.subscribe((values) => {
+      subjects.paperKey$.next(values.paperKey);
+      subjects.cellSize$.next(values.cellSize);
+      subjects.fontSize$.next(values.fontSize);
     });
 
     return () => subscription.unsubscribe();

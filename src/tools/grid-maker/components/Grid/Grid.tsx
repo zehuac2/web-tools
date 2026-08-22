@@ -97,11 +97,11 @@ function drawGridTexts(
 }
 
 const Grid: FC<GridProps> = ({ className }) => {
-  const { renderPaperKey$, renderCellSize$, renderFontSize$ } = useEvents();
+  const { paperKey$, cellSize$, fontSize$ } = useEvents();
 
-  const paperKey = useBehaviorSubject(renderPaperKey$);
-  const cellSize = useBehaviorSubject(renderCellSize$);
-  const fontSize = useBehaviorSubject(renderFontSize$);
+  const paperKey = useBehaviorSubject(paperKey$);
+  const cellSize = useBehaviorSubject(cellSize$);
+  const fontSize = useBehaviorSubject(fontSize$);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [renderResult, setRenderResult] = useState('');

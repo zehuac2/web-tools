@@ -25,25 +25,27 @@ units/index.ts                   Nominal Inch/Pixel types and inchToPixel conver
 
 1. `Configuration` is an `react-hook-form` form. Each field's `onChange` both
    updates form state and pushes the raw value onto its RxJS subject
-   (`paperKey$`, `cellSize$`, `fontSize$`) from `EventsContext`.
+   (`onPaperKeyChange$`, `onCellSizeChange$`, `onFontSizeChange$`) from
+   `EventsContext`.
 2. `EventsContext` combines those three subjects into `configuration$`, then
    debounces it (`DEBOUNCE_MS = 300`) and de-duplicates it field by field
-   (`isSameConfiguration`) into `settledConfiguration$`. A subscription writes
-   each settled value to a second set of subjects: `renderPaperKey$`,
-   `renderCellSize$`, `renderFontSize$`.
-3. `Grid` and `PreviewHeader` read only the `render*` subjects through
-   `useBehaviorSubject`. This decouples every keystroke (fast, cheap form state)
-   from the canvas redraw (debounced, since it re-rasterizes the whole grid).
+   (`isSameConfiguration`). A subscription writes each settled value to a second
+   set of subjects: `paperKey$`, `cellSize$`, `fontSize$`.
+3. `Grid` and `PreviewHeader` read only the `paperKey$`/`cellSize$`/`fontSize$`
+   subjects through `useBehaviorSubject`. This decouples every keystroke (fast,
+   cheap form state) from the canvas redraw (debounced, since it re-rasterizes
+   the whole grid).
 4. `Grid` computes `GridDimensions` from `calculateGridDimensions`, draws lines
    and cell coordinates to an off-screen `<canvas>`, then reads it back with
    `toDataURL()` into an `<img>`. The `<canvas>` itself stays `display: none`;
    only the `<img>` is visible. This keeps the DOM printable — canvases do not
    reliably print, images do.
-5. `Configuration`'s submit handler pushes onto `print$`. `printConfiguration$`
-   maps that request through `settledConfiguration$` with `switchMap` and
-   `take(1)`, so it emits only after the configuration settles. `AppContent`
-   subscribes to `printConfiguration$` and calls `window.print()`. This stops a
-   print that starts inside the debounce window from printing the previous grid.
+5. `Configuration`'s submit handler pushes onto `onPrint$`.
+   `printConfiguration$` maps that request through `configuration$` with
+   `switchMap` and `take(1)`, so it emits only after the configuration settles.
+   `AppContent` subscribes to `printConfiguration$` and calls `window.print()`.
+   This stops a print that starts inside the debounce window from printing the
+   previous grid.
 
 ## Invariants
 
@@ -82,9 +84,9 @@ while the form still holds the user's edits.
 `combineLatest` builds a new object for every emission, so the default `===`
 check never filters anything.
 
-The two-tier subject split (`paperKey$`/`cellSize$`/`fontSize$` for form state
-vs. `renderPaperKey$`/`renderCellSize$`/`renderFontSize$` for the debounced
-render) is deliberate. Add a new configuration field the same way: one raw
-subject wired into `configuration$`, one `render*` subject the debounce
-subscription writes to, and read only the `render*` version from `Grid` or
+The two-tier subject split (`onPaperKeyChange$`/`onCellSizeChange$`/
+`onFontSizeChange$` for form state vs. `paperKey$`/`cellSize$`/`fontSize$` for
+the debounced render) is deliberate. Add a new configuration field the same way:
+one `on*Change$` subject wired into `configuration$`, one plain subject the
+debounce subscription writes to, and read only the plain version from `Grid` or
 `PreviewHeader`.

@@ -10,10 +10,10 @@ export interface PreviewHeaderProps {
 }
 
 const PreviewHeader: FC<PreviewHeaderProps> = ({ className }) => {
-  const { renderPaperKey$, renderCellSize$ } = useEvents();
+  const { paperKey$, cellSize$ } = useEvents();
 
-  const paperKey = useBehaviorSubject(renderPaperKey$);
-  const cellSize = useBehaviorSubject(renderCellSize$);
+  const paperKey = useBehaviorSubject(paperKey$);
+  const cellSize = useBehaviorSubject(cellSize$);
 
   const { width, height, colCount, rowCount } = calculateGridDimensions(
     paperKey,
