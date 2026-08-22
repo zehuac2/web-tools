@@ -4,8 +4,8 @@ import { useEffect } from 'react';
 
 import useBehaviorSubject from '@/hooks/react/useBehaviorSubject';
 import { EventsProvider, useEvents } from './EventsContext';
-import { type ConfigurationValues } from '../Configuration';
-import { type Inch, type Pixel } from '../units';
+import { type ConfigurationValues } from '@/tools/grid-maker/Configuration';
+import { type Inch, type Pixel } from '@/tools/grid-maker/units';
 
 describe('EventsContext', () => {
   beforeEach(() => {

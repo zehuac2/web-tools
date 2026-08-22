@@ -2,7 +2,7 @@ import { type FC } from 'react';
 import { css } from 'styled-system/css';
 
 import useBehaviorSubject from '@/hooks/react/useBehaviorSubject';
-import { useEvents } from '../contexts/EventsContext';
+import { useEvents } from '@/tools/grid-maker/contexts/EventsContext';
 import { calculateGridDimensions } from './Grid';
 
 export interface PreviewHeaderProps {

@@ -4,7 +4,7 @@ import { css } from 'styled-system/css';
 import useBehaviorSubject from '@/hooks/react/useBehaviorSubject';
 import { Papers } from '@/tools/grid-maker/papers';
 import { type Inch, type Pixel, inchToPixel } from '@/tools/grid-maker/units';
-import { useEvents } from '../../contexts/EventsContext';
+import { useEvents } from '@/tools/grid-maker/contexts/EventsContext';
 import InvalidConfiguration from './InvalidConfiguration';
 import { getGridFont, getGridLineVariable, getGridTextVariable } from './theme';
 
