@@ -8,7 +8,7 @@
 | UI islands      | React 19 (`client:only="react"`) + React Compiler                |
 | Styling         | Panda CSS (single design system, `src/recipes/`)                 |
 | Forms           | react-hook-form (grid-maker, receipt-splitter)                   |
-| State           | Redux Toolkit (random, driving-visualizer)                       |
+| State           | Redux Toolkit (random, driving-visualizer), RxJS (grid-maker)    |
 | 3D              | three.js via @react-three/fiber + drei (driving-visualizer only) |
 | Tests           | Vitest + Testing Library                                         |
 | Package manager | Bun                                                              |
@@ -141,6 +141,19 @@ Foo.displayName = 'Foo';
 
 export default Foo;
 ```
+
+### RxJS
+
+```tsx
+import useBehaviorSubject from '@/hooks/react/useBehaviorSubject';
+
+const MyComponent = () => {
+  const state = useBehaviorSubject(behaviorSubject$);
+};
+```
+
+- Subscribe to changes using `useBehaviorSubject`;
+- Only pass `BehaviorSubject` to `useBehaviorSubject`;
 
 ## Driving visualizer
 
