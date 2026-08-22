@@ -1,7 +1,8 @@
-import { type FC, useId } from 'react';
+import { type ChangeEvent, type FC, useId } from 'react';
 
 import { useFormContext } from 'react-hook-form';
 import InputField from '@/components/InputField';
+import { useEvents } from './contexts/EventsContext';
 import { Papers } from './papers';
 import { type Inch, type Pixel, isValidPixel } from './units';
 import { REPO_URL } from '@/meta';
@@ -19,6 +20,12 @@ export interface ConfigurationValues {
   cellSize: Inch;
   fontSize: Pixel;
 }
+
+export const DEFAULT_CONFIGURATION_VALUES: ConfigurationValues = {
+  paperKey: 'US_ENVELOPE_9',
+  cellSize: 0.2 as Inch,
+  fontSize: 6 as Pixel,
+};
 
 function validateNotInfinite(value: number): boolean {
   return value !== Infinity && value !== -Infinity;
@@ -38,6 +45,7 @@ const Configuration: FC<ConfigurationProps> = ({ className, onSubmit }) => {
     formState: { errors },
     handleSubmit,
   } = useFormContext<ConfigurationValues>();
+  const { paperKey$, cellSize$, fontSize$ } = useEvents();
   const paperSizeId = useId();
 
   const controlClassName = control();
@@ -86,7 +94,11 @@ const Configuration: FC<ConfigurationProps> = ({ className, onSubmit }) => {
         <select
           id={paperSizeId}
           className={controlClassName}
-          {...register('paperKey')}
+          {...register('paperKey', {
+            onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+              paperKey$.next(event.target.value as keyof typeof Papers);
+            },
+          })}
         >
           {(Object.keys(Papers) as (keyof typeof Papers)[]).map((paper) => (
             <option key={paper} value={paper}>
@@ -105,6 +117,9 @@ const Configuration: FC<ConfigurationProps> = ({ className, onSubmit }) => {
           step={0.1}
           {...register('cellSize', {
             valueAsNumber: true,
+            onChange: (event: ChangeEvent<HTMLInputElement>) => {
+              cellSize$.next(event.target.valueAsNumber as Inch);
+            },
             validate: validateInch,
             required: 'Cell size is required',
             min: {
@@ -124,6 +139,9 @@ const Configuration: FC<ConfigurationProps> = ({ className, onSubmit }) => {
           step={1}
           {...register('fontSize', {
             valueAsNumber: true,
+            onChange: (event: ChangeEvent<HTMLInputElement>) => {
+              fontSize$.next(event.target.valueAsNumber as Pixel);
+            },
             validate: validatePixel,
             required: 'Font size is required',
             min: {
