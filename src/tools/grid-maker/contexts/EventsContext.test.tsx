@@ -3,9 +3,39 @@ import { render, screen, act } from '@testing-library/react';
 import { useEffect } from 'react';
 
 import useBehaviorSubject from '@/hooks/react/useBehaviorSubject';
-import { EventsProvider, useEvents } from './EventsContext';
-import { type ConfigurationValues } from '@/tools/grid-maker/Configuration';
+import {
+  EventsProvider,
+  useEvents,
+  type EventsContextValue,
+} from './EventsContext';
+import { type ConfigurationValues } from '@/tools/grid-maker/configurationValues';
 import { type Inch, type Pixel } from '@/tools/grid-maker/units';
+
+const DEBOUNCE_MS = 300;
+
+/**
+ * Mount an `EventsProvider` and return the subjects it owns.
+ */
+function renderEvents(): EventsContextValue {
+  let events: EventsContextValue | null = null;
+
+  function Probe() {
+    events = useEvents();
+    return null;
+  }
+
+  render(
+    <EventsProvider>
+      <Probe />
+    </EventsProvider>,
+  );
+
+  if (!events) {
+    throw new Error('EventsProvider did not render');
+  }
+
+  return events;
+}
 
 describe('EventsContext', () => {
   beforeEach(() => {
@@ -81,5 +111,53 @@ describe('EventsContext', () => {
     );
     expect(screen.getByTestId('renderCellSize').textContent).to.equal('0.5');
     expect(screen.getByTestId('renderFontSize').textContent).to.equal('12');
+  });
+
+  it('Settled configuration ignores an unchanged emission', () => {
+    const events = renderEvents();
+    const values: ConfigurationValues[] = [];
+    const subscription = events.settledConfiguration$.subscribe((value) =>
+      values.push(value),
+    );
+
+    act(() => {
+      events.cellSize$.next(0.5 as Inch);
+      vi.advanceTimersByTime(DEBOUNCE_MS);
+    });
+
+    expect(values).to.have.length(1);
+
+    act(() => {
+      events.cellSize$.next(0.5 as Inch);
+      vi.advanceTimersByTime(DEBOUNCE_MS);
+    });
+
+    expect(values).to.have.length(1);
+    subscription.unsubscribe();
+  });
+
+  it('Print waits for the configuration to settle', () => {
+    const events = renderEvents();
+    const printed: ConfigurationValues[] = [];
+    const subscription = events.printConfiguration$.subscribe((value) =>
+      printed.push(value),
+    );
+
+    act(() => {
+      events.cellSize$.next(0.5 as Inch);
+      events.print$.next();
+    });
+
+    expect(printed).to.have.length(0);
+
+    act(() => {
+      vi.advanceTimersByTime(DEBOUNCE_MS);
+    });
+
+    expect(printed).to.have.length(1);
+    expect(printed[0].cellSize).to.equal(0.5);
+    // The render subjects are flushed before the print request emits.
+    expect(events.renderCellSize$.getValue()).to.equal(0.5);
+    subscription.unsubscribe();
   });
 });

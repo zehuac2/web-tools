@@ -1,13 +1,15 @@
-import { type FC } from 'react';
+import { type FC, useEffect } from 'react';
 
 import { FormProvider, useForm } from 'react-hook-form';
 
 import Grid from './components/Grid';
 import PreviewHeader from './components/PreviewHeader';
-import Configuration, {
+import Configuration from './Configuration';
+import {
   DEFAULT_CONFIGURATION_VALUES,
   type ConfigurationValues,
-} from './Configuration';
+} from './configurationValues';
+import { useEvents } from './contexts/EventsContext';
 
 import { css } from 'styled-system/css';
 import { card } from 'styled-system/recipes';
@@ -17,6 +19,17 @@ const AppContent: FC = () => {
     mode: 'onChange',
     defaultValues: DEFAULT_CONFIGURATION_VALUES,
   });
+  const { print$, printConfiguration$ } = useEvents();
+
+  // The print dialog opens only after the configuration settles, so the grid
+  // in the document matches the values in the form.
+  useEffect(() => {
+    const subscription = printConfiguration$.subscribe(() => {
+      window.print();
+    });
+
+    return () => subscription.unsubscribe();
+  }, [printConfiguration$]);
 
   return (
     <FormProvider {...form}>
@@ -75,7 +88,7 @@ const AppContent: FC = () => {
             display: { _print: 'none' },
           })}
           onSubmit={() => {
-            window.print();
+            print$.next();
           }}
         />
       </div>

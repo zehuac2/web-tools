@@ -4,20 +4,24 @@ import {
   createContext,
   useContext,
   useEffect,
-  useMemo,
+  useState,
 } from 'react';
 import {
   BehaviorSubject,
   type Observable,
+  Subject,
   combineLatest,
   debounceTime,
   distinctUntilChanged,
+  switchMap,
+  take,
 } from 'rxjs';
 
 import {
   type ConfigurationValues,
   DEFAULT_CONFIGURATION_VALUES,
-} from '@/tools/grid-maker/Configuration';
+  isSameConfiguration,
+} from '@/tools/grid-maker/configurationValues';
 import { Papers } from '@/tools/grid-maker/papers';
 import { type Inch, type Pixel } from '@/tools/grid-maker/units';
 
@@ -26,6 +30,9 @@ export interface EventsContextValue {
   readonly cellSize$: BehaviorSubject<Inch>;
   readonly fontSize$: BehaviorSubject<Pixel>;
   readonly configuration$: Observable<ConfigurationValues>;
+  readonly settledConfiguration$: Observable<ConfigurationValues>;
+  readonly print$: Subject<void>;
+  readonly printConfiguration$: Observable<ConfigurationValues>;
   readonly renderPaperKey$: BehaviorSubject<keyof typeof Papers>;
   readonly renderCellSize$: BehaviorSubject<Inch>;
   readonly renderFontSize$: BehaviorSubject<Pixel>;
@@ -44,7 +51,9 @@ export const EventsProvider: FC<EventsProviderProps> = ({
   children,
   initialValues,
 }) => {
-  const subjects = useMemo(() => {
+  // `useState` is used instead of `useMemo`. React can discard a `useMemo`
+  // cache, and every subject here holds application state that must survive.
+  const [subjects] = useState<EventsContextValue>(() => {
     const paperKey$ = new BehaviorSubject<keyof typeof Papers>(
       initialValues?.paperKey ?? DEFAULT_CONFIGURATION_VALUES.paperKey,
     );
@@ -61,6 +70,22 @@ export const EventsProvider: FC<EventsProviderProps> = ({
       fontSize: fontSize$,
     });
 
+    // `combineLatest` builds a new object for every emission, so the
+    // comparator must look at the fields, not the reference.
+    const settledConfiguration$ = configuration$.pipe(
+      debounceTime(DEBOUNCE_MS),
+      distinctUntilChanged(isSameConfiguration),
+    );
+
+    const print$ = new Subject<void>();
+
+    // A print request waits for the configuration to settle. This stops a
+    // print that starts inside the debounce window from printing the grid
+    // drawn for the previous configuration.
+    const printConfiguration$ = print$.pipe(
+      switchMap(() => settledConfiguration$.pipe(take(1))),
+    );
+
     const renderPaperKey$ = new BehaviorSubject<keyof typeof Papers>(
       paperKey$.getValue(),
     );
@@ -72,20 +97,21 @@ export const EventsProvider: FC<EventsProviderProps> = ({
       cellSize$,
       fontSize$,
       configuration$,
+      settledConfiguration$,
+      print$,
+      printConfiguration$,
       renderPaperKey$,
       renderCellSize$,
       renderFontSize$,
     };
-  }, []);
+  });
 
   useEffect(() => {
-    const subscription = subjects.configuration$
-      .pipe(debounceTime(DEBOUNCE_MS), distinctUntilChanged())
-      .subscribe((values) => {
-        subjects.renderPaperKey$.next(values.paperKey);
-        subjects.renderCellSize$.next(values.cellSize);
-        subjects.renderFontSize$.next(values.fontSize);
-      });
+    const subscription = subjects.settledConfiguration$.subscribe((values) => {
+      subjects.renderPaperKey$.next(values.paperKey);
+      subjects.renderCellSize$.next(values.cellSize);
+      subjects.renderFontSize$.next(values.fontSize);
+    });
 
     return () => subscription.unsubscribe();
   }, [subjects]);
