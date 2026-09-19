@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import uiSlice, { toggleFillVisible, type UiState } from './uiSlice';
+import uiSlice, { toggleFillVisible, type UiState } from './ui-slice';
 
 const reducer = uiSlice.reducer;
 

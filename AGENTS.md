@@ -38,8 +38,8 @@ src/
 ├── meta.ts                 REPO_URL, the TOOLS registry (slug/title/glyph/blurb)
 ├── recipes/                shared Panda recipes: button, card, control, panel
 ├── styles/global.css       reset + print rules
-├── layouts/ToolLayout.astro  sticky header shell, wraps every tool page
-├── components/             shared React: InputField, ToolPanel, LabeledOutput, SliderRow
+├── layouts/tool-layout.astro  sticky header shell, wraps every tool page
+├── components/             shared React: input-field, tool-panel, labeled-output, slider-row
 ├── pages/                  one *.astro route per tool, plus index.astro (tool directory)
 └── tools/                  one directory per tool; each owns its App.tsx and domain logic
     ├── grid-maker/
@@ -48,7 +48,7 @@ src/
     └── receipt-splitter/
 ```
 
-Each `pages/<slug>.astro` renders `ToolLayout` and mounts that tool's `App` as a
+Each `pages/<slug>.astro` renders `ToolLayout` and mounts that tool's `app` as a
 `client:only="react"` island — every tool is SPA-shaped and reads `window`
 during render, so server/client hydration mismatches are not a concern this way,
 at the cost of the tool body painting after its JS loads.
@@ -89,7 +89,7 @@ Use it only for a tool that must own the whole viewport.
 ## Dark mode
 
 `<html data-theme>` always holds a concrete `light` or `dark`. The blocking
-inline script in `ToolLayout.astro` resolves the stored preference before first
+inline script in `tool-layout.astro` resolves the stored preference before first
 paint, so nothing downstream ever sees `system`.
 
 - Give a color both values: `value: { base: …, _dark: … }`. The `_dark`
@@ -101,7 +101,7 @@ paint, so nothing downstream ever sees `system`.
   print artifact, so it stays dark ink on white paper in both themes.
 - `src/theme/` owns the preference. `theme.ts` holds the pure helpers and the
   single DOM writer, `store.ts` the `useSyncExternalStore` backing, and
-  `useTheme.ts` the `useTheme`/`useResolvedTheme` hooks. The header toggle and
+  `use-theme.ts` the `useTheme`/`useResolvedTheme` hooks. The header toggle and
   each tool are separate React roots, so the store broadcasts on a window event.
   React Context cannot cross that boundary.
 - `applyTheme` sets the attribute before it notifies. Code that resolves tokens
@@ -145,7 +145,7 @@ export default Foo;
 ### RxJS
 
 ```tsx
-import useBehaviorSubject from '@/hooks/react/useBehaviorSubject';
+import useBehaviorSubject from '@/hooks/react/use-behavior-subject';
 
 const MyComponent = () => {
   const state = useBehaviorSubject(behaviorSubject$);

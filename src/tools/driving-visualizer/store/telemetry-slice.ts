@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { TelemetryData } from '../scene/Scene';
-import { DEFAULT_PARAMS } from '../sim/CarModel';
+import type { TelemetryData } from '../scene/scene';
+import { DEFAULT_PARAMS } from '../sim/car-model';
 
 export type { TelemetryData };
 

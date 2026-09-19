@@ -1,9 +1,9 @@
 import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect } from 'vitest';
-import { renderWithStore } from '@/tools/driving-visualizer/testStore';
-import { DEFAULT_PARAMS } from '@/tools/driving-visualizer/sim/CarModel';
-import ParameterPanel from './ParameterPanel';
+import { renderWithStore } from '@/tools/driving-visualizer/test-store';
+import { DEFAULT_PARAMS } from '@/tools/driving-visualizer/sim/car-model';
+import ParameterPanel from './parameter-panel';
 
 // SliderRow sets aria-label from its label, so each slider is reachable by name.
 function slider(label: string): HTMLInputElement {

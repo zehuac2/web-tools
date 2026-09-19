@@ -1,10 +1,10 @@
 import { type FC } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { Scene } from './scene/Scene';
-import Telemetry from './ui/Telemetry';
-import Toolbar from './ui/Toolbar';
-import ParameterPanel from './ui/ParameterPanel';
-import Controls from './ui/Controls';
+import { Scene } from './scene/scene';
+import Telemetry from './ui/telemetry';
+import Toolbar from './ui/toolbar';
+import ParameterPanel from './ui/parameter-panel';
+import Controls from './ui/controls';
 
 import { css } from 'styled-system/css';
 

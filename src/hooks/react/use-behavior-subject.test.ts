@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { BehaviorSubject } from 'rxjs';
 
-import useBehaviorSubject from './useBehaviorSubject';
+import useBehaviorSubject from './use-behavior-subject';
 
 describe('useBehaviorSubject', () => {
   it('Initial value can be received', () => {

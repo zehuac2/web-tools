@@ -1,9 +1,9 @@
 import { type ChangeEvent, type FC, useId } from 'react';
 
 import { useFormContext } from 'react-hook-form';
-import InputField from '@/components/InputField';
-import { type ConfigurationValues } from './configurationValues';
-import { useEvents } from './contexts/EventsContext';
+import InputField from '@/components/input-field';
+import { type ConfigurationValues } from './configuration-values';
+import { useEvents } from './contexts/events-context';
 import { Papers } from './papers';
 import { type Inch, type Pixel, isValidPixel } from './units';
 import { REPO_URL } from '@/meta';

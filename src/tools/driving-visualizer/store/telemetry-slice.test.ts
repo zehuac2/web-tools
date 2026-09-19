@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { DEFAULT_PARAMS } from '../sim/CarModel';
+import { DEFAULT_PARAMS } from '../sim/car-model';
 import telemetrySlice, {
   setTelemetry,
   type TelemetryData,
-} from './telemetrySlice';
+} from './telemetry-slice';
 
 const reducer = telemetrySlice.reducer;
 

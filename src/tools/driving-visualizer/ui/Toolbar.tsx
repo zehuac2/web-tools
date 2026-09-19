@@ -1,18 +1,18 @@
 import { type FC } from 'react';
 import { css } from 'styled-system/css';
 import { button } from 'styled-system/recipes';
-import OverlayPanel from './OverlayPanel';
+import OverlayPanel from './overlay-panel';
 import {
   useAppDispatch,
   useAppSelector,
 } from '@/tools/driving-visualizer/store/index';
-import { toggleFillVisible } from '@/tools/driving-visualizer/store/uiSlice';
+import { toggleFillVisible } from '@/tools/driving-visualizer/store/ui-slice';
 import {
   centerCamera,
   centerSteering,
   clearTraces,
   resetPose,
-} from '@/tools/driving-visualizer/store/sceneActions';
+} from '@/tools/driving-visualizer/store/scene-actions';
 
 // Below `lg` the buttons wrap into rows. A column would be ~340px tall and
 // swallow the canvas on a short viewport.

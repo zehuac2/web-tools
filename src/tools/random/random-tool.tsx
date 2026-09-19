@@ -1,14 +1,14 @@
 import { type FC } from 'react';
 import { css } from 'styled-system/css';
 import { button, panel } from 'styled-system/recipes';
-import ToolPanel from '@/components/ToolPanel';
-import RandomSection from './components/RandomSection';
+import ToolPanel from '@/components/tool-panel';
+import RandomSection from './components/random-section';
 import {
   addSection,
   deleteSection,
   generate,
   updateSection,
-} from './store/randomSlice';
+} from './store/random-slice';
 import { useAppDispatch, useAppSelector } from './store';
 
 export interface RandomToolProps {}

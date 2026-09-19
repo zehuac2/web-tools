@@ -40,7 +40,7 @@
 import { useEffect, useImperativeHandle, useRef, type Ref } from 'react';
 import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
-import type { BodyCorners } from '@/tools/driving-visualizer/sim/CarModel';
+import type { BodyCorners } from '@/tools/driving-visualizer/sim/car-model';
 import type { SceneColors } from './theme';
 
 const CORNER_KEYS: (keyof BodyCorners)[] = [

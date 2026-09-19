@@ -1,13 +1,13 @@
 import { screen } from '@testing-library/react';
 import { act } from 'react';
 import { describe, it, expect } from 'vitest';
-import { renderWithStore } from '@/tools/driving-visualizer/testStore';
+import { renderWithStore } from '@/tools/driving-visualizer/test-store';
 import { makeStore } from '@/tools/driving-visualizer/store/index';
 import {
   setTelemetry,
   type TelemetryData,
-} from '@/tools/driving-visualizer/store/telemetrySlice';
-import Telemetry from './Telemetry';
+} from '@/tools/driving-visualizer/store/telemetry-slice';
+import Telemetry from './telemetry';
 
 function frame(over: Partial<TelemetryData> = {}): TelemetryData {
   return {

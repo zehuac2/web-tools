@@ -1,7 +1,7 @@
 import { type FC } from 'react';
 import { css } from 'styled-system/css';
 import { useAppSelector } from '@/tools/driving-visualizer/store/index';
-import OverlayPanel from './OverlayPanel';
+import OverlayPanel from './overlay-panel';
 
 // Hold a floor width so the rows do not reflow as the values change.
 const panelClassName = css({ minWidth: 'telemetry' });

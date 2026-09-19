@@ -2,13 +2,13 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, act } from '@testing-library/react';
 import { useEffect } from 'react';
 
-import useBehaviorSubject from '@/hooks/react/useBehaviorSubject';
+import useBehaviorSubject from '@/hooks/react/use-behavior-subject';
 import {
   EventsProvider,
   useEvents,
   type EventsContextValue,
-} from './EventsContext';
-import { type ConfigurationValues } from '@/tools/grid-maker/configurationValues';
+} from './events-context';
+import { type ConfigurationValues } from '@/tools/grid-maker/configuration-values';
 import { type Inch, type Pixel } from '@/tools/grid-maker/units';
 
 const DEBOUNCE_MS = 300;

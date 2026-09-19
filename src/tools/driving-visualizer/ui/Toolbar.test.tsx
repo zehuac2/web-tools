@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import type { ActionCreatorWithoutPayload } from '@reduxjs/toolkit';
-import { renderWithStore } from '@/tools/driving-visualizer/testStore';
+import { renderWithStore } from '@/tools/driving-visualizer/test-store';
 import {
   addAppListener,
   makeStore,
@@ -12,8 +12,8 @@ import {
   centerSteering,
   clearTraces,
   resetPose,
-} from '@/tools/driving-visualizer/store/sceneActions';
-import Toolbar from './Toolbar';
+} from '@/tools/driving-visualizer/store/scene-actions';
+import Toolbar from './toolbar';
 
 // Each button and the scene command it must send. The fill toggle is not here
 // because it writes reducer state instead of commanding the scene.

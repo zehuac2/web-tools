@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 
-import layoutSource from '../layouts/ToolLayout.astro?raw';
+import layoutSource from '../layouts/tool-layout.astro?raw';
 
 import {
   applyTheme,
@@ -191,13 +191,13 @@ describe('applyTheme', () => {
   });
 });
 
-describe('boot script in ToolLayout.astro', () => {
+describe('boot script in tool-layout.astro', () => {
   // Extract the real script body from the layout, so the test runs the shipped
   // code instead of a copy. The parameter names must match the `define:vars`
-  // keys in ToolLayout.astro.
+  // keys in tool-layout.astro.
   const match = layoutSource.match(/<script\b([^>]*)>([\s\S]*?)<\/script>/);
   if (!match?.[1].includes('define:vars')) {
-    throw new Error('boot script not found in ToolLayout.astro');
+    throw new Error('boot script not found in tool-layout.astro');
   }
   const body = match[2];
 

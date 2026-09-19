@@ -7,7 +7,7 @@ import {
   THEME_STORAGE_KEY,
   type ThemePreference,
 } from '@/theme/theme';
-import ThemeToggle from './ThemeToggle';
+import ThemeToggle from './theme-toggle';
 
 const applied = () => document.documentElement.getAttribute(THEME_ATTRIBUTE);
 const stored = () => localStorage.getItem(THEME_STORAGE_KEY);

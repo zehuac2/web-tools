@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import InputField from './InputField';
+import InputField from './input-field';
 
 describe('InputField Accessibility', () => {
   it('should have appropriate accessibility attributes including id', () => {

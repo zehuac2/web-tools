@@ -1,20 +1,20 @@
 # Grid Maker
 
 Generates a printable dot/line grid sized to a chosen paper size and cell size.
-`src/pages/grid-maker.astro` mounts `App.tsx` as a `client:only="react"` island.
+`src/pages/grid-maker.astro` mounts `app.tsx` as a `client:only="react"` island.
 
 The root `AGENTS.md` applies. This file adds tool-specific rules.
 
 ## Layout
 
 ```
-App.tsx                          Entry point. Wraps the tool in EventsProvider.
-AppContent.tsx                   Two-column layout: preview card + Configuration.
-Configuration.tsx                Settings form. Pushes each field onto its subject.
-configurationValues.ts           ConfigurationValues, its defaults, and its comparator.
-contexts/EventsContext.tsx       RxJS subjects bridging the form to the canvas render.
-components/PreviewHeader.tsx     Preview card heading; shows live grid/paper dimensions.
-components/Grid/Grid.tsx         Canvas render, dimension math, <img> output.
+app.tsx                          Entry point. Wraps the tool in EventsProvider.
+app-content.tsx                  Two-column layout: preview card + Configuration.
+configuration.tsx                Settings form. Pushes each field onto its subject.
+configuration-values.ts          ConfigurationValues, its defaults, and its comparator.
+contexts/events-context.tsx      RxJS subjects bridging the form to the canvas render.
+components/preview-header.tsx    Preview card heading; shows live grid/paper dimensions.
+components/Grid/grid.tsx         Canvas render, dimension math, <img> output.
 components/Grid/theme.ts         Resolves grid.* and fonts.grid Panda tokens to CSS vars.
 components/Grid/InvalidConfiguration/  Fallback shown when cell size is invalid.
 papers/index.ts                  Papers registry: displayName + width/height in inches.

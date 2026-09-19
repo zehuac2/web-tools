@@ -2,7 +2,7 @@ import { type FC } from 'react';
 import { css, cx } from 'styled-system/css';
 import { button } from 'styled-system/recipes';
 
-import { useTheme } from '@/theme/useTheme';
+import { useTheme } from '@/theme/use-theme';
 import type { ThemePreference } from '@/theme/theme';
 
 export interface ThemeToggleProps {

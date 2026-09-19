@@ -23,7 +23,7 @@ export default defineConfig({
   cssVarRoot: ':where(:root, :host)',
 
   // Key the light/dark conditions off `data-theme` on `<html>`, which the
-  // inline script in `ToolLayout.astro` always sets to a concrete value.
+  // inline script in `tool-layout.astro` always sets to a concrete value.
   // Panda's built-in `_dark` is class-based (`.dark &`), so override it.
   // The `&[...]` half matters: `globalCss` targets `html, body`, and `<html>`
   // is the element that carries the attribute.
@@ -362,7 +362,7 @@ export default defineConfig({
     },
   },
 
-  // `OverlayPanel` forwards `placement` as a prop, so the static extractor
+  // `overlay-panel` forwards `placement` as a prop, so the static extractor
   // cannot tell which variants are in use. Emit all of them.
   staticCss: {
     recipes: {

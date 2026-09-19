@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { CarParams } from '../sim/CarModel';
-import { DEFAULT_PARAMS } from '../sim/CarModel';
+import type { CarParams } from '../sim/car-model';
+import { DEFAULT_PARAMS } from '../sim/car-model';
 import carParamsSlice, {
   setBodyWidth,
   setFrontOverhang,
@@ -10,7 +10,7 @@ import carParamsSlice, {
   setSpeed,
   setSteeringRate,
   setWheelbase,
-} from './carParamsSlice';
+} from './car-params-slice';
 
 const reducer = carParamsSlice.reducer;
 

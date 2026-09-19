@@ -2,7 +2,7 @@
 
 import { type FC, type ReactNode } from 'react';
 import { css } from 'styled-system/css';
-import OverlayPanel from './OverlayPanel';
+import OverlayPanel from './overlay-panel';
 
 // Below `lg` this legend would collide with the bottom-center parameter bar.
 // It documents keyboard input, so a narrow or touch viewport does not need it.

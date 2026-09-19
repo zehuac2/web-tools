@@ -1,15 +1,15 @@
 import { describe, it, expect, vi } from 'vitest';
 import type { ActionCreatorWithoutPayload } from '@reduxjs/toolkit';
-import { DEFAULT_PARAMS } from '../sim/CarModel';
+import { DEFAULT_PARAMS } from '../sim/car-model';
 import { addAppListener, makeStore } from './index';
-import { setSpeed } from './carParamsSlice';
+import { setSpeed } from './car-params-slice';
 import {
   centerCamera,
   centerSteering,
   clearTraces,
   resetPose,
-} from './sceneActions';
-import { toggleFillVisible } from './uiSlice';
+} from './scene-actions';
+import { toggleFillVisible } from './ui-slice';
 
 // Every scene command, in the order Scene subscribes to them.
 const sceneCommands: [string, ActionCreatorWithoutPayload][] = [

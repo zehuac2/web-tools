@@ -1,7 +1,7 @@
 import { type FC } from 'react';
 import { css, cx } from 'styled-system/css';
 import { button, card, control } from 'styled-system/recipes';
-import InputField from '@/components/InputField';
+import InputField from '@/components/input-field';
 import {
   updateSection,
   type RandomSection as RandomSectionValue,

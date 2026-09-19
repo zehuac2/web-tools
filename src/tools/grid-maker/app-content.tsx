@@ -3,13 +3,13 @@ import { type FC, useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import Grid from './components/Grid';
-import PreviewHeader from './components/PreviewHeader';
-import Configuration from './Configuration';
+import PreviewHeader from './components/preview-header';
+import Configuration from './configuration';
 import {
   DEFAULT_CONFIGURATION_VALUES,
   type ConfigurationValues,
-} from './configurationValues';
-import { useEvents } from './contexts/EventsContext';
+} from './configuration-values';
+import { useEvents } from './contexts/events-context';
 
 import { css } from 'styled-system/css';
 import { card } from 'styled-system/recipes';

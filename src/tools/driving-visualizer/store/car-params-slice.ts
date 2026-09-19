@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { DEFAULT_PARAMS, type CarParams } from '../sim/CarModel';
+import { DEFAULT_PARAMS, type CarParams } from '../sim/car-model';
 
 const initialState: CarParams = DEFAULT_PARAMS;
 

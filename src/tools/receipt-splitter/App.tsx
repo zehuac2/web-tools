@@ -1,9 +1,9 @@
 import { type FC, useState } from 'react';
 import { css } from 'styled-system/css';
 import { button, control } from 'styled-system/recipes';
-import InputField from '@/components/InputField';
-import ToolPanel from '@/components/ToolPanel';
-import LabeledOutput from '@/components/LabeledOutput';
+import InputField from '@/components/input-field';
+import ToolPanel from '@/components/tool-panel';
+import LabeledOutput from '@/components/labeled-output';
 import {
   formatCurrency,
   splitEqual,

@@ -1,6 +1,6 @@
 import { type FC } from 'react';
 import { Provider } from 'react-redux';
-import RandomTool from './RandomTool';
+import RandomTool from './random-tool';
 import { store } from './store';
 
 const App: FC = () => {

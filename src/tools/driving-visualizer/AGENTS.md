@@ -1,7 +1,7 @@
 # Driving Visualizer
 
 Top-down 2D visualizer for a car's swept path. It uses a kinematic bicycle model
-(see `sim/CarModel.ts`). `src/pages/driving-visualizer.astro` mounts `App.tsx`
+(see `sim/car-model.ts`). `src/pages/driving-visualizer.astro` mounts `app.tsx`
 as a `client:only="react"` island.
 
 The root `AGENTS.md` applies. This file adds tool-specific rules.
@@ -9,13 +9,13 @@ The root `AGENTS.md` applies. This file adds tool-specific rules.
 ## Layout
 
 ```
-App.tsx                 Entry point. Wraps the tool in the Redux <Provider>.
-DrivingVisualizer.tsx   Full-bleed R3F <Canvas> with four floating overlay panels.
+app.tsx                 Entry point. Wraps the tool in the Redux <Provider>.
+driving-visualizer.tsx  Full-bleed R3F <Canvas> with four floating overlay panels.
 sim/                    Pure simulation. No React, no three.js.
 scene/                  The R3F scene graph. Owns every three.js object.
 store/                  Redux Toolkit store, slices, and scene commands.
 ui/                     Overlay panels. Plain data and store hooks only.
-testStore.tsx           Test-only `renderWithStore` helper.
+test-store.tsx          Test-only `renderWithStore` helper.
 ```
 
 This tool is the one exception to the repo's two-column tool layout. The page
@@ -23,7 +23,7 @@ passes `fullBleed` to `ToolLayout`, which turns the page shell into a `100dvh`
 flex column and makes `<main>` a `position: relative` box that fills everything
 below the header. The page never scrolls.
 
-`DrivingVisualizer.tsx` covers that box with `position: absolute; inset: 0`.
+`driving-visualizer.tsx` covers that box with `position: absolute; inset: 0`.
 Positioning absolutely, rather than with a `height: 100%` chain, is deliberate:
 `client:only` islands mount inside an `<astro-island>` element, and a percentage
 height would collapse there.
@@ -31,21 +31,21 @@ height would collapse there.
 The `<Canvas>` is the first child, in normal flow. The four panels follow it, so
 DOM order alone paints them on top and no `z-index` is needed.
 
-- `sim/CarModel.ts` — bicycle model math: `step`, `getCorners`, `turningRadius`,
-  `DEFAULT_PARAMS`. State anchors at the rear axle center.
+- `sim/car-model.ts` — bicycle model math: `step`, `getCorners`,
+  `turningRadius`, `DEFAULT_PARAMS`. State anchors at the rear axle center.
 - `sim/input.ts` — pure key mapping: held key codes to `StepInput`.
-- `sim/useKeyboardInput.ts` — window key listeners. Exposes a stable
+- `sim/use-keyboard-input.ts` — window key listeners. Exposes a stable
   `readInput()`. It never triggers re-renders.
-- `scene/Scene.tsx` — the single `useFrame` loop and the scene graph.
-- `scene/Car.tsx` — declarative car meshes. Geometry derives from `params`.
-- `scene/SweptPath.tsx` — corner trails and the swept-fill mesh.
+- `scene/scene.tsx` — the single `useFrame` loop and the scene graph.
+- `scene/car.tsx` — declarative car meshes. Geometry derives from `params`.
+- `scene/swept-path.tsx` — corner trails and the swept-fill mesh.
 - `scene/theme.ts` — resolves `scene.*` Panda tokens to CSS color strings.
-- `store/carParamsSlice.ts` — the `CarParams` slider values.
-- `store/telemetrySlice.ts` — the latest telemetry frame. The `TelemetryData`
+- `store/car-params-slice.ts` — the `CarParams` slider values.
+- `store/telemetry-slice.ts` — the latest telemetry frame. The `TelemetryData`
   type lives in `scene/Scene.tsx` and is re-exported here.
-- `store/uiSlice.ts` — fill visibility.
-- `store/sceneActions.ts` — toolbar commands. See "Scene commands" below.
-- `ui/OverlayPanel.tsx` — the glass panel shell every overlay uses. It takes a
+- `store/ui-slice.ts` — fill visibility.
+- `store/scene-actions.ts` — toolbar commands. See "Scene commands" below.
+- `ui/overlay-panel.tsx` — the glass panel shell every overlay uses. It takes a
   `placement` and applies the shared `overlay()` recipe.
 
 ## Data flow
@@ -90,7 +90,7 @@ Do not break these rules.
 The toolbar talks to the scene through the Redux listener middleware. It does
 not use an imperative handle.
 
-1. `store/sceneActions.ts` declares plain actions: `resetPose`, `clearTraces`,
+1. `store/scene-actions.ts` declares plain actions: `resetPose`, `clearTraces`,
    `centerSteering`, `centerCamera`. They carry no payload and update no reducer
    state.
 2. `ui/Toolbar.tsx` dispatches them.
@@ -104,9 +104,9 @@ Add a new command the same way: one `createAction`, one dispatch site, one
 
 ## Layer rules
 
-- Keep `sim/` framework-free. `CarModel.ts` and `input.ts` are pure and have
-  Vitest coverage (`*.test.ts`). Only `useKeyboardInput.ts` may touch React and
-  the DOM. Run tests with `bun run test`.
+- Keep `sim/` framework-free. `car-model.ts` and `input.ts` are pure and have
+  Vitest coverage (`*.test.ts`). Only `use-keyboard-input.ts` may touch React
+  and the DOM. Run tests with `bun run test`.
 - `store/` and `ui/` also have Vitest coverage. `scene/` has none: it needs an
   R3F canvas, and `@react-three/test-renderer` is not a dependency. Keep new
   logic out of `scene/` when a pure module or a slice can hold it.
@@ -128,7 +128,7 @@ Add a new command the same way: one `createAction`, one dispatch site, one
   `useRef`, not a `useMemo`, because React Compiler may re-key a dependency
   array.
 - Each `ui/` panel wraps itself in `OverlayPanel` and owns its own `placement`.
-  Do not position panels from `DrivingVisualizer.tsx`.
+  Do not position panels from `driving-visualizer.tsx`.
 - `OverlayPanel` passes `placement` through as a prop, so Panda cannot see which
   variants are used. `panda.config.ts` emits them all through `staticCss`. Add
   any new placement there too.
@@ -146,7 +146,7 @@ Add a new command the same way: one `createAction`, one dispatch site, one
   single instance the app uses. Tests call `makeStore()` so that state and
   listener subscriptions never leak between them.
 - To test a component against the store, use `renderWithStore` from
-  `testStore.tsx`. It wraps the element in a `<Provider>` and returns the store
+  `test-store.tsx`. It wraps the element in a `<Provider>` and returns the store
   next to the Testing Library queries. Pass a store to seed state or to register
   listeners first; omit it to get a new store.
 

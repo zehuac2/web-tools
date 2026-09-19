@@ -1,6 +1,6 @@
 import { type FC } from 'react';
 import { Provider } from 'react-redux';
-import DrivingVisualizer from './DrivingVisualizer';
+import DrivingVisualizer from './driving-visualizer';
 import { store } from './store/index';
 
 const App: FC = () => {

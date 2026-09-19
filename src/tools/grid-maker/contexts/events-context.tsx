@@ -21,7 +21,7 @@ import {
   type ConfigurationValues,
   DEFAULT_CONFIGURATION_VALUES,
   isSameConfiguration,
-} from '@/tools/grid-maker/configurationValues';
+} from '@/tools/grid-maker/configuration-values';
 import { Papers } from '@/tools/grid-maker/papers';
 import { type Inch, type Pixel } from '@/tools/grid-maker/units';
 

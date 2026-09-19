@@ -1,8 +1,8 @@
 import { type FC } from 'react';
 
-import { EventsProvider } from './contexts/EventsContext';
-import AppContent from './AppContent';
-import { DEFAULT_CONFIGURATION_VALUES } from './configurationValues';
+import { EventsProvider } from './contexts/events-context';
+import AppContent from './app-content';
+import { DEFAULT_CONFIGURATION_VALUES } from './configuration-values';
 
 const App: FC = () => {
   return (

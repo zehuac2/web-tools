@@ -3,7 +3,7 @@ import { describe, it, expect, afterEach } from 'vitest';
 import { type FC } from 'react';
 
 import { applyTheme, THEME_ATTRIBUTE, THEME_STORAGE_KEY } from './theme';
-import { useResolvedTheme, useTheme } from './useTheme';
+import { useResolvedTheme, useTheme } from './use-theme';
 
 const Resolved: FC = () => <output>{useResolvedTheme()}</output>;
 

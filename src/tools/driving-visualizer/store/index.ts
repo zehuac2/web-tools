@@ -4,22 +4,22 @@ import {
   createListenerMiddleware,
 } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
-import carParamsSlice from './carParamsSlice';
+import carParamsSlice from './car-params-slice';
 import {
   centerCamera,
   centerSteering,
   clearTraces,
   resetPose,
-} from './sceneActions';
-import telemetrySlice from './telemetrySlice';
-import uiSlice from './uiSlice';
+} from './scene-actions';
+import telemetrySlice from './telemetry-slice';
+import uiSlice from './ui-slice';
 
 /**
  * Builds a store with its own listener middleware. The app uses the single
  * `store` below. Tests call this to get an isolated store per test.
  */
 export function makeStore() {
-  // Carries scene commands (see sceneActions.ts) from the toolbar to Scene's
+  // Carries scene commands (see scene-actions.ts) from the toolbar to Scene's
   // listeners, without routing them through reducer state.
   const listenerMiddleware = createListenerMiddleware();
 

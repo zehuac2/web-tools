@@ -1,8 +1,8 @@
 import { type FC, useState } from 'react';
 import { css, cx } from 'styled-system/css';
 import { button } from 'styled-system/recipes';
-import SliderRow from '@/components/SliderRow';
-import OverlayPanel from './OverlayPanel';
+import SliderRow from '@/components/slider-row';
+import OverlayPanel from './overlay-panel';
 import {
   useAppDispatch,
   useAppSelector,
@@ -15,7 +15,7 @@ import {
   setMaxSteeringAngle,
   setSteeringRate,
   setSpeed,
-} from '@/tools/driving-visualizer/store/carParamsSlice';
+} from '@/tools/driving-visualizer/store/car-params-slice';
 
 const listClassName = css({
   display: 'flex',

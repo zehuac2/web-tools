@@ -13,25 +13,25 @@ import {
   getCorners,
   createInitialState,
   turningRadius,
-} from '@/tools/driving-visualizer/sim/CarModel';
-import type { CarState } from '@/tools/driving-visualizer/sim/CarModel';
-import { useKeyboardInput } from '@/tools/driving-visualizer/sim/useKeyboardInput';
+} from '@/tools/driving-visualizer/sim/car-model';
+import type { CarState } from '@/tools/driving-visualizer/sim/car-model';
+import { useKeyboardInput } from '@/tools/driving-visualizer/sim/use-keyboard-input';
 import {
   addAppListener,
   useAppDispatch,
   useAppSelector,
 } from '@/tools/driving-visualizer/store/index';
-import { setTelemetry } from '@/tools/driving-visualizer/store/telemetrySlice';
+import { setTelemetry } from '@/tools/driving-visualizer/store/telemetry-slice';
 import {
   centerCamera,
   centerSteering,
   clearTraces,
   resetPose,
-} from '@/tools/driving-visualizer/store/sceneActions';
-import { Car } from './Car';
-import { SweptPath, type SweptPathHandle } from './SweptPath';
+} from '@/tools/driving-visualizer/store/scene-actions';
+import { Car } from './car';
+import { SweptPath, type SweptPathHandle } from './swept-path';
 import { getSceneColors } from './theme';
-import { useResolvedTheme } from '@/theme/useTheme';
+import { useResolvedTheme } from '@/theme/use-theme';
 
 export interface TelemetryData {
   x: number;
@@ -90,7 +90,7 @@ export function Scene(): React.ReactElement {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Effect events for the toolbar's scene commands (see store/sceneActions.ts).
+  // Effect events for the toolbar's scene commands (see store/scene-actions.ts).
   // Each always reads the latest invalidate/camera without making the
   // subscribing effect below re-run when they change.
   const onResetPose = useEffectEvent(() => {

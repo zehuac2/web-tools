@@ -1,1 +1,1 @@
-export { default as default } from './InvalidConfiguration';
+export { default as default } from './invalid-configuration';
