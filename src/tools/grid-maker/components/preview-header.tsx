@@ -3,7 +3,7 @@ import { css } from 'styled-system/css';
 
 import useBehaviorSubject from '@/hooks/react/use-behavior-subject';
 import { useEvents } from '@/tools/grid-maker/contexts/events-context';
-import { calculateGridDimensions } from './Grid';
+import { calculateGridDimensions } from './grid';
 
 export interface PreviewHeaderProps {
   className?: string;

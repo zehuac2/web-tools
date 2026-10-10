@@ -1,7 +1,7 @@
 // Bridge from Panda design tokens to resolved color strings. three.js
 // materials cannot read CSS custom properties directly (no `var(...)`
 // support), so this reads each token's *computed* value off the document
-// root, the same way `src/tools/grid-maker/components/Grid/theme.ts` does
+// root, the same way `src/tools/grid-maker/components/grid/theme.ts` does
 // for its canvas 2D context.
 
 import { token, type Token } from 'styled-system/tokens';

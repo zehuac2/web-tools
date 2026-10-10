@@ -2,7 +2,7 @@ import { type FC, useEffect } from 'react';
 
 import { FormProvider, useForm } from 'react-hook-form';
 
-import Grid from './components/Grid';
+import Grid from './components/grid';
 import PreviewHeader from './components/preview-header';
 import Configuration from './configuration';
 import {

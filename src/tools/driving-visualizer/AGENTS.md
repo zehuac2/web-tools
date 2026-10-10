@@ -42,7 +42,7 @@ DOM order alone paints them on top and no `z-index` is needed.
 - `scene/theme.ts` — resolves `scene.*` Panda tokens to CSS color strings.
 - `store/car-params-slice.ts` — the `CarParams` slider values.
 - `store/telemetry-slice.ts` — the latest telemetry frame. The `TelemetryData`
-  type lives in `scene/Scene.tsx` and is re-exported here.
+  type lives in `scene/scene.tsx` and is re-exported here.
 - `store/ui-slice.ts` — fill visibility.
 - `store/scene-actions.ts` — toolbar commands. See "Scene commands" below.
 - `ui/overlay-panel.tsx` — the glass panel shell every overlay uses. It takes a
@@ -93,8 +93,8 @@ not use an imperative handle.
 1. `store/scene-actions.ts` declares plain actions: `resetPose`, `clearTraces`,
    `centerSteering`, `centerCamera`. They carry no payload and update no reducer
    state.
-2. `ui/Toolbar.tsx` dispatches them.
-3. `scene/Scene.tsx` subscribes with `addAppListener`. Each listener effect is a
+2. `ui/toolbar.tsx` dispatches them.
+3. `scene/scene.tsx` subscribes with `addAppListener`. Each listener effect is a
    `useEffectEvent`, so it always reads the latest `invalidate` and `camera`
    without re-subscribing.
 

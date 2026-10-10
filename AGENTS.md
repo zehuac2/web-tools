@@ -41,7 +41,7 @@ src/
 ├── layouts/tool-layout.astro  sticky header shell, wraps every tool page
 ├── components/             shared React: input-field, tool-panel, labeled-output, slider-row
 ├── pages/                  one *.astro route per tool, plus index.astro (tool directory)
-└── tools/                  one directory per tool; each owns its App.tsx and domain logic
+└── tools/                  one directory per tool; each owns its app.tsx and domain logic
     ├── grid-maker/
     ├── driving-visualizer/
     ├── random/
@@ -75,7 +75,7 @@ Reach for a semantic token (`fg.default`, `border.default`, `bg.canvas`,
 `scene.*`, …) before an ad hoc raw value. When a three.js material needs a
 token's resolved CSS value, read it through `token()`/`getPropertyValue()`,
 following the pattern in `src/tools/driving-visualizer/scene/theme.ts` and
-`src/tools/grid-maker/components/Grid/theme.ts`.
+`src/tools/grid-maker/components/grid/theme.ts`.
 
 Most tool pages use the same two-column layout: primary output/canvas on the
 left in a `card()`, a `370px` settings/controls `card()` on the right

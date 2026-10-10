@@ -14,9 +14,9 @@ configuration.tsx                Settings form. Pushes each field onto its subje
 configuration-values.ts          ConfigurationValues, its defaults, and its comparator.
 contexts/events-context.tsx      RxJS subjects bridging the form to the canvas render.
 components/preview-header.tsx    Preview card heading; shows live grid/paper dimensions.
-components/Grid/grid.tsx         Canvas render, dimension math, <img> output.
-components/Grid/theme.ts         Resolves grid.* and fonts.grid Panda tokens to CSS vars.
-components/Grid/InvalidConfiguration/  Fallback shown when cell size is invalid.
+components/grid/grid.tsx         Canvas render, dimension math, <img> output.
+components/grid/theme.ts         Resolves grid.* and fonts.grid Panda tokens to CSS vars.
+components/grid/invalid-configuration/  Fallback shown when cell size is invalid.
 papers/index.ts                  Papers registry: displayName + width/height in inches.
 units/index.ts                   Nominal Inch/Pixel types and inchToPixel conversion.
 ```
@@ -51,7 +51,7 @@ units/index.ts                   Nominal Inch/Pixel types and inchToPixel conver
 
 - `Grid` renders at `window.devicePixelRatio` and scales back down via the
   `<img>`'s `width`/`height` attributes, so the print/screen output stays sharp
-  on high-DPI screens. Any new draw call in `Grid.tsx` must multiply by `dpr`
+  on high-DPI screens. Any new draw call in `grid.tsx` must multiply by `dpr`
   the same way the existing ones do.
 - `pixelCellSize <= 0` renders `InvalidConfiguration` instead of drawing. Never
   let `calculateGridDimensions` divide by a zero or negative cell size.

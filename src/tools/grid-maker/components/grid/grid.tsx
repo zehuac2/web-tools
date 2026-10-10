@@ -5,7 +5,7 @@ import useBehaviorSubject from '@/hooks/react/use-behavior-subject';
 import { Papers } from '@/tools/grid-maker/papers';
 import { type Inch, type Pixel, inchToPixel } from '@/tools/grid-maker/units';
 import { useEvents } from '@/tools/grid-maker/contexts/events-context';
-import InvalidConfiguration from './InvalidConfiguration';
+import InvalidConfiguration from './invalid-configuration';
 import { getGridFont, getGridLineVariable, getGridTextVariable } from './theme';
 
 export interface GridProps {
