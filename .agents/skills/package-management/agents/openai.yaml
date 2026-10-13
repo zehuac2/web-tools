@@ -1,0 +1,4 @@
+interface:
+  display_name: "Package Management"
+  short_description: "Guide package manager and dependency choices"
+  default_prompt: "Use $package-management to manage this project's dependencies."

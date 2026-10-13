@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "skills": {
+    "github-actions": {
+      "source": "zehuac2/tech-skills",
+      "sourceType": "github",
+      "skillPath": "skills/github-actions/SKILL.md",
+      "computedHash": "75b92361d1796e29347dc723bb4f533068d8e15447eab0f80f2fc10265cc30e7"
+    },
+    "js-ts-style": {
+      "source": "zehuac2/tech-skills",
+      "sourceType": "github",
+      "skillPath": "skills/js-ts-style/SKILL.md",
+      "computedHash": "e23f8f98f2bd8569e89ba4509f7cc645eae7a77b3982b8d9ee8179ce145e0026"
+    },
+    "package-management": {
+      "source": "zehuac2/tech-skills",
+      "sourceType": "github",
+      "skillPath": "skills/package-management/SKILL.md",
+      "computedHash": "6cb9ed16f7f309b12c24e9c3383fae0274b6a88f460562a8930ba778dcc37c89"
+    },
+    "react": {
+      "source": "zehuac2/tech-skills",
+      "sourceType": "github",
+      "skillPath": "skills/react/SKILL.md",
+      "computedHash": "85840af90edc89f7355b9f6b1ebf1dae10e4d0bd708af38b09589a1d8ec7dbc7"
+    }
+  }
+}

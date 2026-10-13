@@ -1,0 +1,4 @@
+interface:
+  display_name: "React"
+  short_description: "Guide React component file structure"
+  default_prompt: "Use $react to structure this React component file."

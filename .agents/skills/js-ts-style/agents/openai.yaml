@@ -1,0 +1,4 @@
+interface:
+  display_name: "JS/TS Style"
+  short_description: "Enforce JS/TS style conventions"
+  default_prompt: "Use $js-ts-style to review and fix the style of this file."
