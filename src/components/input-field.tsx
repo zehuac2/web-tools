@@ -1,7 +1,10 @@
 import { type FC, useId, type ComponentPropsWithoutRef } from 'react';
 
 export type InputPropsToOmit =
-  'className' | 'id' | 'aria-labelledby' | 'aria-describedby';
+  | 'className'
+  | 'id'
+  | 'aria-labelledby'
+  | 'aria-describedby';
 
 interface CellSizeInputProps extends Omit<
   ComponentPropsWithoutRef<'input'>,

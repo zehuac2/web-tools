@@ -13,7 +13,7 @@
     "prepare": "panda codegen && panda cssgen",
     "check": "astro check && tsc --noEmit",
     "test": "vitest run",
-    "format": "prettier --write ."
+    "format": "oxfmt --write ."
   },
   "dependencies": {
     "@astrojs/react": "6.0.2",
@@ -41,7 +41,7 @@
     "@types/three": "0.185.4",
     "babel-plugin-react-compiler": "1.0.0",
     "jsdom": "29.1.1",
-    "prettier": "3.9.6",
+    "oxfmt": "0.72.0",
     "typescript": "6.0.3",
     "vitest": "4.1.10"
   }

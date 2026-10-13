@@ -26,7 +26,7 @@ bun run build     # production build → dist/
 bun run preview   # serve the production build locally
 bun run check     # astro check + tsc --noEmit
 bun run test      # run the Vitest suite; do not use bun test
-bun run format    # format all files with Prettier
+bun run format    # format supported files
 ```
 
 Run `bun run format` and `bun run check` after you change code.
