@@ -24,10 +24,15 @@ bun run prepare   # panda codegen + cssgen (generates styled-system/, run once a
 bun run dev       # Astro dev server
 bun run build     # production build → dist/
 bun run preview   # serve the production build locally
-bun run check     # astro check + tsc --noEmit
+bun run check     # astro check + bun check --no-script
 bun run test      # run the Vitest suite; do not use bun test
 bun run format    # format supported files
 ```
+
+`bun run check` runs `astro check`, then `bun check --no-script`. `bun check` is
+Bun's type checker. `--no-script` selects the type checker when a `check` script
+exists. `astro check` checks `.astro` files. `astro check` uses the `typescript`
+package.
 
 Run `bun run format` and `bun run check` after you change code.
 
