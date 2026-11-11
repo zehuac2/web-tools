@@ -8,7 +8,6 @@ on:
 
 jobs:
   check:
-    timeout-minutes: 15
     uses: ./.github/workflows/check.yml
 
   build:
