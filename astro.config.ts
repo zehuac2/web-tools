@@ -2,8 +2,6 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 
-const REACT_COMPILER_CONFIG = {};
-
 // https://astro.build/config
 export default defineConfig({
   site: 'https://zehuac2.github.io',
@@ -49,9 +47,10 @@ export default defineConfig({
   },
   integrations: [
     react({
-      babel: {
-        plugins: [['babel-plugin-react-compiler', REACT_COMPILER_CONFIG]],
-      },
+      // @astrojs/react 7 removed the Babel option. The Oxc compiler replaces
+      // babel-plugin-react-compiler. The previous plugin config was empty, so
+      // the compiler keeps its defaults.
+      compiler: true,
     }),
   ],
 });
