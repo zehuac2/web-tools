@@ -47,9 +47,6 @@ export default defineConfig({
   },
   integrations: [
     react({
-      // @astrojs/react 7 removed the Babel option. The Oxc compiler replaces
-      // babel-plugin-react-compiler. The previous plugin config was empty, so
-      // the compiler keeps its defaults.
       compiler: true,
     }),
   ],
