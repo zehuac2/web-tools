@@ -6,6 +6,9 @@ import { overlayRecipe } from './src/recipes/overlay.recipe';
 import { panelRecipe } from './src/recipes/panel.recipe';
 
 export default defineConfig({
+  // v2 does not add built-in presets. v1 included these two automatically.
+  presets: ['@pandacss/preset-base', '@pandacss/preset-panda'],
+
   // Whether to use css reset
   preflight: true,
 
@@ -38,7 +41,8 @@ export default defineConfig({
   theme: {
     extend: {
       breakpoints: {
-        xs: '480px',
+        // 480px. Preset breakpoints use rem, and v2 requires one unit.
+        xs: '30rem',
       },
       tokens: {
         colors: {

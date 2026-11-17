@@ -1,4 +1,5 @@
-import { token, type Token } from 'styled-system/tokens';
+import { token } from 'styled-system/tokens';
+import type { Token } from 'styled-system/types';
 
 function getVariable(t: Token): string {
   return token(t).replaceAll('var(', '').replaceAll(')', '');
