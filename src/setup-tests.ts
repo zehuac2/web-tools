@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/vitest';
 
 // Supply an in-memory `localStorage` for tests. Do not read the global first:
 // Node's getter can warn or throw without `--localstorage-file`.
