@@ -4,7 +4,8 @@
 // root, the same way `src/tools/grid-maker/components/grid/theme.ts` does
 // for its canvas 2D context.
 
-import { token, type Token } from 'styled-system/tokens';
+import { token } from 'styled-system/tokens';
+import type { Token } from 'styled-system/types';
 
 function resolve(t: Token): string {
   const varName = token(t).replaceAll('var(', '').replaceAll(')', '');
