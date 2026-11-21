@@ -1,14 +1,14 @@
 import { type FC } from 'react';
+import { Provider } from 'react-redux';
 
-import { EventsProvider } from './contexts/events-context';
 import AppContent from './app-content';
-import { DEFAULT_CONFIGURATION_VALUES } from './configuration-values';
+import { store } from './store';
 
 const App: FC = () => {
   return (
-    <EventsProvider initialValues={DEFAULT_CONFIGURATION_VALUES}>
+    <Provider store={store}>
       <AppContent />
-    </EventsProvider>
+    </Provider>
   );
 };
 

@@ -1,8 +1,7 @@
 import { type FC } from 'react';
 import { css } from 'styled-system/css';
 
-import useBehaviorSubject from '@/hooks/react/use-behavior-subject';
-import { useEvents } from '@/tools/grid-maker/contexts/events-context';
+import { useAppSelector } from '@/tools/grid-maker/store';
 import { calculateGridDimensions } from './grid';
 
 export interface PreviewHeaderProps {
@@ -10,10 +9,9 @@ export interface PreviewHeaderProps {
 }
 
 const PreviewHeader: FC<PreviewHeaderProps> = ({ className }) => {
-  const { paperKey$, cellSize$ } = useEvents();
-
-  const paperKey = useBehaviorSubject(paperKey$);
-  const cellSize = useBehaviorSubject(cellSize$);
+  const { paperKey, cellSize } = useAppSelector(
+    (state) => state.gridMaker.settled,
+  );
 
   const { width, height, colCount, rowCount } = calculateGridDimensions(
     paperKey,
