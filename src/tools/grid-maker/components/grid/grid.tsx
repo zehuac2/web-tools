@@ -1,10 +1,9 @@
 import { type FC, useRef, useEffect, useState, memo } from 'react';
 import { css } from 'styled-system/css';
 
-import useBehaviorSubject from '@/hooks/react/use-behavior-subject';
 import { Papers } from '@/tools/grid-maker/papers';
 import { type Inch, type Pixel, inchToPixel } from '@/tools/grid-maker/units';
-import { useEvents } from '@/tools/grid-maker/contexts/events-context';
+import { useAppSelector } from '@/tools/grid-maker/store';
 import InvalidConfiguration from './invalid-configuration';
 import { getGridFont, getGridLineVariable, getGridTextVariable } from './theme';
 
@@ -97,11 +96,9 @@ function drawGridTexts(
 }
 
 const Grid: FC<GridProps> = ({ className }) => {
-  const { paperKey$, cellSize$, fontSize$ } = useEvents();
-
-  const paperKey = useBehaviorSubject(paperKey$);
-  const cellSize = useBehaviorSubject(cellSize$);
-  const fontSize = useBehaviorSubject(fontSize$);
+  const { paperKey, cellSize, fontSize } = useAppSelector(
+    (state) => state.gridMaker.settled,
+  );
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [renderResult, setRenderResult] = useState('');

@@ -9,7 +9,8 @@ import {
   DEFAULT_CONFIGURATION_VALUES,
   type ConfigurationValues,
 } from './configuration-values';
-import { useEvents } from './contexts/events-context';
+import { printReady, printRequested } from './store/configuration-slice';
+import { addAppListener, useAppDispatch } from './store';
 
 import { css } from 'styled-system/css';
 import { card } from 'styled-system/recipes';
@@ -19,17 +20,22 @@ const AppContent: FC = () => {
     mode: 'onChange',
     defaultValues: DEFAULT_CONFIGURATION_VALUES,
   });
-  const { onPrint$, printConfiguration$ } = useEvents();
+  const dispatch = useAppDispatch();
 
   // The print dialog opens only after the configuration settles, so the grid
   // in the document matches the values in the form.
   useEffect(() => {
-    const subscription = printConfiguration$.subscribe(() => {
-      window.print();
-    });
+    const unsubscribe = dispatch(
+      addAppListener({
+        actionCreator: printReady,
+        effect: () => {
+          window.print();
+        },
+      }),
+    );
 
-    return () => subscription.unsubscribe();
-  }, [printConfiguration$]);
+    return () => unsubscribe();
+  }, [dispatch]);
 
   return (
     <FormProvider {...form}>
@@ -88,7 +94,7 @@ const AppContent: FC = () => {
             display: { _print: 'none' },
           })}
           onSubmit={() => {
-            onPrint$.next();
+            dispatch(printRequested());
           }}
         />
       </div>
