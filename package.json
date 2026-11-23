@@ -5,7 +5,7 @@
   "type": "module",
   "repository": "https://github.com/zehuac2/web-tools.git",
   "license": "MIT",
-  "packageManager": "bun@1.4.4",
+  "packageManager": "bun@1.4.5",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -19,8 +19,8 @@
     "@astrojs/react": "7.1.9",
     "@react-three/drei": "10.7.9",
     "@react-three/fiber": "9.8.2",
-    "@reduxjs/toolkit": "2.14.0",
-    "astro": "7.4.12",
+    "@reduxjs/toolkit": "2.15.0",
+    "astro": "7.4.13",
     "clsx": "2.1.1",
     "react": "19.3.1",
     "react-dom": "19.3.1",
@@ -30,20 +30,20 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.12",
-    "@pandacss/dev": "2.5.0",
-    "@pandacss/preset-base": "2.5.0",
-    "@pandacss/preset-panda": "2.5.0",
+    "@pandacss/dev": "2.6.0",
+    "@pandacss/preset-base": "2.6.0",
+    "@pandacss/preset-panda": "2.6.0",
     "@testing-library/dom": "10.4.2",
     "@testing-library/jest-dom": "7.0.1",
     "@testing-library/react": "16.3.3",
-    "@testing-library/user-event": "14.6.12",
+    "@testing-library/user-event": "14.6.13",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "@types/three": "0.187.0",
     "jsdom": "31.0.1",
     "oxc-transform-react": "0.156.0",
-    "oxfmt": "0.79.0",
+    "oxfmt": "0.80.0",
     "typescript": "6.0.3",
-    "vitest": "5.1.0"
+    "vitest": "5.1.1"
   }
 }
